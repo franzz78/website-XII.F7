@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XII.F7 Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="background-blob"></div>
+
+    <div class="container">
+        <header class="glass">
+            <img src="logo-sekolah.png" alt="Logo Sekolah" class="logo">
+            <div class="title-text">
+                <h1>XII.F7</h1>
+                <p>Digital Class Portal</p>
+            </div>
+            <img src="logo-kelas.png" alt="Logo Kelas" class="logo">
+        </header>
+
+        <section class="announcement glass">
+            <div class="badge"><i class="fas fa-bullhorn"></i> Pengumuman</div>
+            <h2 id="text-pengumuman">Memuat informasi...</h2>
+            <p id="tgl-pengumuman">--/--/--</p>
+        </section>
+
+        <div class="grid">
+            <div class="card glass">
+                <i class="fas fa-calendar-alt icon"></i>
+                <h3>Jadwal Besok</h3>
+                <p id="text-jadwal">Memuat jadwal...</p>
+            </div>
+
+            <div class="card glass">
+                <i class="fas fa-wallet icon"></i>
+                <h3>Kas Kelas</h3>
+                <p id="text-kas">Rp 0</p>
+            </div>
+
+            <div class="card glass">
+                <i class="fas fa-user-check icon"></i>
+                <h3>Piket Hari Ini</h3>
+                <p id="text-piket">Memuat nama...</p>
+            </div>
+
+            <div class="card glass">
+                <i class="fas fa-tasks icon"></i>
+                <h3>Tugas Terdekat</h3>
+                <p id="text-tugas">Tidak ada tugas</p>
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2023 XII.F7 - Solid, Kreatif, Berprestasi</p>
+        </footer>
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
