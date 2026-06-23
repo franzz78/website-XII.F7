@@ -4,14 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Website Resmi Kelas XI.F7</title>
+    <!-- Tailwind CSS & FontAwesome -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <!-- Firebase SDK v9 (Compat) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <style>
+        /* Efek khusus untuk piringan hitam berputar */
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .spin-vinyl {
+            animation: spin 4s linear infinite;
+        }
+        .spin-vinyl.paused {
+            animation-play-state: paused;
+        }
+        /* Transisi halus untuk widget musik muncul/hilang */
+        #music-floating-widget {
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        #music-floating-widget.hide-widget {
+            opacity: 0;
+            pointer-events: none;
+            transform: translate(-50%, 20px);
+        }
+    </style>
 </head>
-<body class="min-h-screen text-slate-100 flex flex-col items-center">
+<body class="min-h-screen text-slate-100 flex flex-col items-center pb-24">
 
+    <!-- AUDIO ELEMENT (Musik Latar Belakang) -->
+    <audio id="bg-music" loop>
+        <source src="https://www.image2url.com/r2/default/audio/1782242939479-f33bdcf2-5869-4e75-b7d2-030df5365bd8.mp3" type="audio/mp3">
+    </audio>
+
+    <!-- OVERLAY AKSES DITUTUP -->
     <div id="closed-overlay" class="fixed inset-0 bg-slate-950 z-50 flex flex-col items-center justify-center p-4 hidden">
         <div class="glass p-8 rounded-3xl text-center max-w-sm w-full border border-purple-500/30">
             <i class="fas fa-lock text-purple-500 text-5xl mb-4 animate-pulse"></i>
@@ -21,8 +51,10 @@
         </div>
     </div>
 
+    <!-- MAIN CONTAINER (Simulasi Tampilan Mobile/Web Terpusat) -->
     <main class="w-full max-w-md px-5 py-6 space-y-8">
         
+        <!-- HEADER PROFILE AREA -->
         <header class="flex justify-between items-center text-sm font-medium">
             <div class="flex items-center gap-1.5 opacity-80">
                 <div class="w-2 h-2 rounded-full bg-purple-500 animate-ping"></div>
@@ -33,22 +65,42 @@
             </button>
         </header>
 
-        <section class="text-center relative py-4 bg-hero-pattern bg-cover bg-center rounded-2xl overflow-hidden shadow-2xl">
+        <!-- HERO SECTION (XI.F7 TITLE) -->
+        <section class="text-center relative py-8 bg-hero-pattern bg-cover bg-center rounded-2xl overflow-hidden shadow-2xl">
             <div class="absolute inset-0 bg-gradient-to-b from-purple-900/30 via-slate-950/80 to-slate-950"></div>
-            <div class="relative z-10">
+            <div class="relative z-10 flex flex-col items-center justify-center">
+                <!-- Judul Kelas -->
                 <h1 class="text-5xl font-black tracking-wider text-white drop-shadow-[0_4px_12px_rgba(168,85,247,0.4)]">XI F7</h1>
-                <p class="text-[10px] uppercase font-bold tracking-widest text-purple-400 mt-1">SMAN 1 LEMAHABANG KABUPATEN CIREBON</p>
+                <p class="text-[10px] uppercase font-bold tracking-widest text-purple-400 mt-1">SMAN 1 Lemahabang Cirebon</p>
                 
+                <!-- BADGE COUNTER MOCKUP -->
                 <div class="glass mx-auto mt-6 px-4 py-3 rounded-full max-w-[280px] flex justify-around items-center border border-white/5 shadow-inner">
-                    <div class="text-center"><span class="text-xl font-black text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]">25</span></div>
-                    <div class="text-center"><span class="text-xl font-black text-pink-500 drop-shadow-[0_0_8px_rgba(244,63,94,0.5)]">37</span></div>
-                    <div class="text-center"><span class="text-xl font-black text-purple-400 drop-shadow-[0_0_8px_rgba(192,132,252,0.5)]">12</span></div>
+                    <div class="text-center"><span class="text-xl font-black text-cyan-400 drop-shadow-cyan">25</span></div>
+                    <div class="text-center"><span class="text-xl font-black text-pink-500 drop-shadow-pink">37</span></div>
+                    <div class="text-center"><span class="text-xl font-black text-purple-400 drop-shadow-purple">12</span></div>
                 </div>
             </div>
         </section>
 
+        <!-- MENU SETTINGS & CONTROLS -->
+        <section class="glass p-4 rounded-2xl space-y-3">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-purple-400"><i class="fas fa-sliders-h mr-1.5"></i> Website Settings</h3>
+            <div class="flex items-center justify-between bg-white/5 p-3 rounded-xl">
+                <div class="flex items-center gap-2.5">
+                    <i id="music-status-icon" class="fas fa-music text-slate-400"></i>
+                    <span class="text-xs font-medium text-slate-200">Background Music</span>
+                </div>
+                <!-- Tombol Mute / Unmute Toggle -->
+                <button id="btn-toggle-music" onclick="toggleMusicControl()" class="px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold transition flex items-center gap-1">
+                    <i id="btn-music-icon" class="fas fa-play"></i> <span id="btn-music-text">Play</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- BENTO LAYOUT LINK MENU -->
         <section class="grid grid-cols-2 gap-4">
-            <a href="https://www.instagram.com/elvf.sevenmelt?igsh=dGZuYng4MjNyZGJj" target="_blank" class="glass p-5 rounded-3xl flex flex-col justify-between h-48 group hover:border-purple-500/40 transition duration-300 relative overflow-hidden">
+            <!-- Instagram Card (Besar / Sebelah Kiri) -->
+            <a href="https://www.instagram.com/smansalacirebon?igsh=NG1meGlvY3kweWpl" target="_blank" class="glass p-5 rounded-3xl flex flex-col justify-between h-48 group hover:border-purple-500/40 transition duration-300 relative overflow-hidden">
                 <div class="flex justify-between items-start">
                     <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-500 flex items-center justify-center shadow-lg"><i class="fab fa-instagram text-2xl text-white"></i></div>
                     <i class="fas fa-chevron-right text-slate-500 group-hover:translate-x-1 transition text-sm mt-1"></i>
@@ -59,7 +111,9 @@
                 </div>
             </a>
 
+            <!-- Sisi Kanan (2 Menu Lebih Kecil) -->
             <div class="flex flex-col gap-4">
+                <!-- Absensi Digital slot -->
                 <a href="https://absensidigitalsmansala.vercel.app/" target="_blank" class="glass p-4 rounded-2xl flex flex-col justify-between h-[90px] group hover:border-blue-500/40 transition duration-300">
                     <div class="flex justify-between items-center">
                         <i class="fas fa-link text-slate-400 text-sm group-hover:text-blue-400 transition"></i>
@@ -68,6 +122,7 @@
                     <h4 class="font-bold text-xs text-slate-200">Absensi Digital</h4>
                 </a>
 
+                <!-- Official Web Sekolah -->
                 <a href="https://www.sman1lacirebon.sch.id/" target="_blank" class="glass p-4 rounded-2xl flex flex-col justify-between h-[90px] group hover:border-emerald-500/40 transition duration-300">
                     <div class="flex justify-between items-center">
                         <i class="fas fa-globe text-slate-400 text-sm group-hover:text-emerald-400 transition"></i>
@@ -78,34 +133,96 @@
             </div>
         </section>
 
+        <!-- MENU MATA PELAJARAN NEW -->
+        <section class="space-y-3">
+            <h3 class="text-sm font-bold tracking-wide text-slate-400 px-1">Mata Pelajaran</h3>
+            <div class="grid grid-cols-2 gap-3">
+                <div class="glass p-3 rounded-xl flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-orange-500/20 text-orange-400 flex items-center justify-center"><i class="fas fa-calculator text-sm"></i></div>
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-200">Matematika</h4>
+                        <p class="text-[9px] text-slate-400">Wajib & Peminatan</p>
+                    </div>
+                </div>
+                <div class="glass p-3 rounded-xl flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center"><i class="fas fa-flask text-sm"></i></div>
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-200">Fisika / Kimia</h4>
+                        <p class="text-[9px] text-slate-400">Ilmu Pengetahuan</p>
+                    </div>
+                </div>
+                <div class="glass p-3 rounded-xl flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center"><i class="fas fa-book-open text-sm"></i></div>
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-200">Bahasa Indonesia</h4>
+                        <p class="text-[9px] text-slate-400">Literasi & Komunikasi</p>
+                    </div>
+                </div>
+                <div class="glass p-3 rounded-xl flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-pink-500/20 text-pink-400 flex items-center justify-center"><i class="fas fa-language text-sm"></i></div>
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-200">Bahasa Inggris</h4>
+                        <p class="text-[9px] text-slate-400">Global Language</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION DYNAMIC GALLERY (ADMIN EDITABLE) -->
         <section class="space-y-3">
             <h3 class="text-sm font-bold tracking-wide text-slate-400 px-1">Class Gallery</h3>
             <div id="gallery-container" class="grid grid-cols-2 gap-3">
-                </div>
+                <!-- Data real-time otomatis masuk di sini -->
+            </div>
             <div class="grid grid-cols-2 gap-3 pt-2">
                 <button onclick="openAdminModal()" class="w-full py-2.5 bg-white/5 border border-white/10 rounded-xl text-xs font-semibold hover:bg-white/10 transition flex items-center justify-center gap-1.5"><i class="fas fa-cloud-upload-alt text-purple-400"></i> Send Photo</button>
                 <button class="w-full py-2.5 bg-white/5 border border-white/10 rounded-xl text-xs font-semibold hover:bg-white/10 transition flex items-center justify-center gap-1.5"><i class="fas fa-download text-purple-400"></i> Request</button>
             </div>
         </section>
 
+        <!-- SECTION ANGGOTA KELAS (ADMIN EDITABLE) -->
         <section class="space-y-3">
             <h3 class="text-sm font-bold tracking-wide text-slate-400 px-1">Anggota Kelas</h3>
             <div id="members-container" class="grid grid-cols-3 gap-3">
-                </div>
+                <!-- Data siswa real-time otomatis masuk di sini -->
+            </div>
         </section>
 
+        <!-- SECTION STRUKTUR ORGANISASI (Gaya Tree Diagram Vertikal) -->
         <section class="space-y-4 pt-4 border-t border-white/5">
             <div class="text-center">
                 <h3 class="text-base font-black tracking-wide text-white"><span class="underline decoration-purple-500 decoration-2 underline-offset-4">Structure</span> & Schedule</h3>
             </div>
-            
             <div class="tree-wrapper flex flex-col items-center">
                 <div id="structure-container" class="w-full space-y-4 flex flex-col items-center">
-                    </div>
+                    <!-- Data struktur dirender vertikal oleh script.js -->
+                </div>
             </div>
         </section>
     </main>
 
+    <!-- 🎵 WIDGET MUSIK TERAPUNG FLOATING PREMIUM (DI TENGAH BAWAH) 🎵 -->
+    <div id="music-floating-widget" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-slate-950/80 backdrop-blur-xl border border-purple-500/30 px-4 py-2.5 rounded-full flex items-center gap-3.5 shadow-[0_10px_30px_rgba(168,85,247,0.2)] max-w-[310px] w-full hide-widget">
+        <!-- Piring Hitam Berputar (Vinyl) -->
+        <div class="relative w-10 h-10 flex-shrink-0">
+            <div id="vinyl-disc" class="w-full h-full bg-slate-900 rounded-full border-2 border-slate-700 flex items-center justify-center spin-vinyl paused shadow-md">
+                <!-- Pusat Piring Hitam -->
+                <div class="w-3 h-3 bg-purple-500 rounded-full border border-black"></div>
+            </div>
+            <!-- Icon Music Badge Kecil -->
+            <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-purple-600 rounded-full flex items-center justify-center border border-slate-950">
+                <i class="fas fa-compact-disc text-[9px] text-white animate-spin"></i>
+            </div>
+        </div>
+        <!-- Detail Info Teks Musik -->
+        <div class="flex-1 min-w-0">
+            <p class="text-[9px] uppercase font-bold tracking-wider text-purple-400 m-0">Music:</p>
+            <h4 class="text-[11px] font-bold text-white tracking-wide truncate m-0">Rukun Sama Teman</h4>
+            <p class="text-[10px] text-slate-400 truncate m-0">kemdikdasmen</p>
+        </div>
+    </div>
+
+    <!-- === DASHBOARD PANEL ADMINISTRATOR MODAL === -->
     <div id="admin-login-modal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
         <div class="glass p-6 rounded-2xl max-w-xs w-full border border-purple-500/20">
             <div class="flex justify-between items-center mb-4">
@@ -117,18 +234,18 @@
         </div>
     </div>
 
-    <div id="admin-panel" class="w-full max-w-md px-5 pb-12 hidden">
+    <!-- DASHBOARD PANEL KENDALIAN ADMIN -->
+    <div id="admin-panel" class="w-full max-w-md px-5 pb-12 hidden mx-auto">
+        <!-- Kode admin panel tetap sama aman -->
         <div class="bg-slate-950 border border-dashed border-purple-500/40 rounded-2xl p-4 space-y-6">
             <div class="flex justify-between items-center border-b border-white/5 pb-2">
                 <h2 class="text-xs font-bold text-purple-400 uppercase tracking-wider"><i class="fas fa-user-cog mr-1"></i> Dashboard Admin</h2>
                 <button onclick="logoutAdmin()" class="text-[10px] bg-red-500/20 text-red-400 px-2 py-1 rounded">Logout</button>
             </div>
-
             <div class="flex items-center justify-between text-xs glass p-3 rounded-xl">
                 <span>Akses Website Publik</span>
                 <button id="btn-toggle-access" onclick="toggleWebsiteAccess()" class="px-3 py-1 rounded font-bold text-[11px]"></button>
             </div>
-
             <div class="space-y-3 text-xs">
                 <div class="p-3 bg-white/5 rounded-xl space-y-2">
                     <p class="font-bold text-purple-300">Tambah Foto Galeri</p>
@@ -140,12 +257,12 @@
                     <p class="font-bold text-pink-400">Tambah Anggota Kelas</p>
                     <input type="number" id="mem-abs" class="w-full bg-slate-900 border border-white/5 p-2 rounded" placeholder="No Absen">
                     <input type="text" id="mem-name" class="w-full bg-slate-900 border border-white/5 p-2 rounded" placeholder="Nama Lengkap">
-                    <input type="text" id="mem-url" class="w-full bg-slate-900 border border-white/5 p-2 rounded" placeholder="URL Foto (Kosongkan = Avatar)">
+                    <input type="text" id="mem-url" class="w-full bg-slate-900 border border-white/5 p-2 rounded" placeholder="URL Foto">
                     <button onclick="addMember()" class="w-full bg-pink-600 py-1.5 rounded font-bold">Simpan</button>
                 </div>
                 <div class="p-3 bg-white/5 rounded-xl space-y-2">
                     <p class="font-bold text-cyan-400">Atur Jabatan Struktur</p>
-                    <input type="text" id="str-role" class="w-full bg-slate-900 border border-white/5 p-2 rounded" placeholder="Jabatan (Contoh: Wali Kelas)">
+                    <input type="text" id="str-role" class="w-full bg-slate-900 border border-white/5 p-2 rounded" placeholder="Jabatan">
                     <input type="text" id="str-name" class="w-full bg-slate-900 border border-white/5 p-2 rounded" placeholder="Nama">
                     <button onclick="addStructure()" class="w-full bg-cyan-600 py-1.5 rounded font-bold">Set Jabatan</button>
                 </div>
@@ -153,6 +270,55 @@
         </div>
     </div>
 
+    <!-- LOGIKA JAVASCRIPT LOGIKAL UTK AUDIO CONTROLLER & TIMING WIDGET -->
+    <script>
+        const audio = document.getElementById('bg-music');
+        const vinyl = document.getElementById('vinyl-disc');
+        const btnText = document.getElementById('btn-music-text');
+        const btnIcon = document.getElementById('btn-music-icon');
+        const musicIcon = document.getElementById('music-status-icon');
+        const musicWidget = document.getElementById('music-floating-widget');
+
+        // Atur Volume agar tidak terlalu besar dan kecil (Set ke 30%)
+        audio.volume = 0.3;
+
+        // Logika Mengontrol Putar / Mute Musik dari Menu Settings
+        function toggleMusicControl() {
+            if (audio.paused) {
+                audio.play().then(() => {
+                    vinyl.classList.remove('paused');
+                    btnText.innerText = "Mute";
+                    btnIcon.className = "fas fa-volume-mute";
+                    musicIcon.className = "fas fa-music text-purple-400 animate-bounce";
+                }).catch(e => console.log("Izin browser diperlukan untuk autoplay"));
+            } else {
+                audio.pause();
+                vinyl.classList.add('paused');
+                btnText.innerText = "Unmute";
+                btnIcon.className = "fas fa-volume-up";
+                musicIcon.className = "fas fa-music text-slate-500";
+            }
+        }
+        window.toggleMusicControl = toggleMusicControl;
+
+        // Auto-Play Trigger Pertama Kali Layar Diklik/Sentuh (Mengikuti Aturan Browser Modern)
+        document.body.addEventListener('click', function() {
+            if(audio.paused && btnText.innerText === "Play") {
+                toggleMusicControl();
+            }
+        }, { once: true });
+
+        // LOGIKA STRATEGI TIMING: Muncul 15 Detik, Hilang 15 Detik Berulang Kali
+        setInterval(() => {
+            // Cek Status saat ini: Jika tersembunyi, munculkan
+            if (musicWidget.classList.contains('hide-widget')) {
+                musicWidget.classList.remove('hide-widget');
+            } else {
+                // Jika sedang muncul, sembunyikan selama siklus berikutnya
+                musicWidget.classList.add('hide-widget');
+            }
+        }, 15000); // Trigger dijalankan bergantian presisi tiap 15 detik sekali
+    </script>
     <script src="script.js"></script>
 </body>
 </html>
