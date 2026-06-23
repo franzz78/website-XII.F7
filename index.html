@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Website Resmi Kelas XI.F7</title>
-    <!-- Tailwind CSS & FontAwesome -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <!-- Firebase SDK v9 (Compat) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <style>
@@ -17,7 +15,7 @@
             background-image: linear-gradient(to top, rgba(8, 5, 18, 1) 0%, rgba(19, 10, 43, 0.85) 50%, rgba(19, 10, 43, 0.4) 100%), 
                               url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800');
             background-size: cover;
-            background-position: center 20%; /* Menggeser background agak ke atas */
+            background-position: center 20%;
         }
         /* Efek khusus untuk piringan hitam berputar */
         @keyframes spin {
@@ -51,12 +49,10 @@
 </head>
 <body class="min-h-screen text-slate-100 flex flex-col items-center pb-24">
 
-    <!-- AUDIO ELEMENT (Musik Latar Belakang) -->
     <audio id="bg-music" loop>
         <source src="https://www.image2url.com/r2/default/audio/1782242939479-f33bdcf2-5869-4e75-b7d2-030df5365bd8.mp3" type="audio/mp3">
     </audio>
 
-    <!-- OVERLAY AKSES DITUTUP -->
     <div id="closed-overlay" class="fixed inset-0 bg-slate-950 z-50 flex flex-col items-center justify-center p-4 hidden">
         <div class="glass p-8 rounded-3xl text-center max-w-sm w-full border border-purple-500/30">
             <i class="fas fa-lock text-purple-500 text-5xl mb-4 animate-pulse"></i>
@@ -66,10 +62,8 @@
         </div>
     </div>
 
-    <!-- MAIN CONTAINER (Simulasi Tampilan Mobile/Web Terpusat) -->
     <main class="w-full max-w-md px-5 py-6 space-y-8">
         
-        <!-- HEADER PROFILE AREA -->
         <header class="flex justify-between items-center text-sm font-medium">
             <div class="flex items-center gap-1.5 opacity-80">
                 <div class="w-2 h-2 rounded-full bg-purple-500 animate-ping"></div>
@@ -80,14 +74,11 @@
             </button>
         </header>
 
-        <!-- HERO SECTION (XI.F7 TITLE & JAM DIGITAL WIDGET) -->
         <section class="text-center relative py-8 bg-hero-adjusted rounded-2xl overflow-hidden shadow-2xl">
             <div class="relative z-10 flex flex-col items-center justify-center">
-                <!-- Judul Kelas -->
                 <h1 class="text-5xl font-black tracking-wider text-white drop-shadow-[0_4px_16px_rgba(168,85,247,0.6)]">XI F7</h1>
                 <p class="text-[10px] uppercase font-bold tracking-widest text-purple-400 mt-1">SMAN 1 LEMAHABANG - KABUPATEN CIREBON</p>
                 
-                <!-- JAM ASIA/JAKARTA DIGITAL WIDGET (Pengganti Badge Counter) -->
                 <div class="glass mx-auto mt-6 px-6 py-2.5 rounded-full min-w-[190px] flex flex-col items-center justify-center border border-purple-500/20 shadow-[0_0_15px_rgba(168,85,247,0.15)]">
                     <span id="live-clock" class="text-2xl font-black text-white tracking-wider drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">00:00:00</span>
                     <span id="live-date" class="text-[9px] uppercase tracking-widest text-purple-300 font-bold mt-0.5">WIB</span>
@@ -95,24 +86,7 @@
             </div>
         </section>
 
-        <!-- MENU SETTINGS & CONTROLS -->
-        <section class="glass p-4 rounded-2xl space-y-3">
-            <h3 class="text-xs font-bold uppercase tracking-wider text-purple-400"><i class="fas fa-sliders-h mr-1.5"></i> Website Settings</h3>
-            <div class="flex items-center justify-between bg-white/5 p-3 rounded-xl">
-                <div class="flex items-center gap-2.5">
-                    <i id="music-status-icon" class="fas fa-music text-slate-400"></i>
-                    <span class="text-xs font-medium text-slate-200">Background Music</span>
-                </div>
-                <!-- Tombol Mute / Unmute Toggle -->
-                <button id="btn-toggle-music" onclick="toggleMusicControl()" class="px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold transition flex items-center gap-1">
-                    <i id="btn-music-icon" class="fas fa-play"></i> <span id="btn-music-text">Play</span>
-                </button>
-            </div>
-        </section>
-
-        <!-- BENTO LAYOUT LINK MENU -->
         <section class="grid grid-cols-2 gap-4">
-            <!-- Instagram Card (Besar / Sebelah Kiri) -->
             <a href="https://www.instagram.com/elvf.sevenmelt?igsh=dGZuYng4MjNyZGJj" target="_blank" class="glass p-5 rounded-3xl flex flex-col justify-between h-48 group hover:border-purple-500/40 transition duration-300 relative overflow-hidden">
                 <div class="flex justify-between items-start">
                     <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-500 flex items-center justify-center shadow-lg"><i class="fab fa-instagram text-2xl text-white"></i></div>
@@ -124,9 +98,7 @@
                 </div>
             </a>
 
-            <!-- Sisi Kanan (2 Menu Lebih Kecil) -->
             <div class="flex flex-col gap-4">
-                <!-- Absensi Digital slot -->
                 <a href="https://absensidigitalsmansala.vercel.app/" target="_blank" class="glass p-4 rounded-2xl flex flex-col justify-between h-[90px] group hover:border-blue-500/40 transition duration-300">
                     <div class="flex justify-between items-center">
                         <i class="fas fa-link text-slate-400 text-sm group-hover:text-blue-400 transition"></i>
@@ -135,7 +107,6 @@
                     <h4 class="font-bold text-xs text-slate-200">Absensi Digital</h4>
                 </a>
 
-                <!-- Official Web Sekolah -->
                 <a href="https://www.sman1lacirebon.sch.id/" target="_blank" class="glass p-4 rounded-2xl flex flex-col justify-between h-[90px] group hover:border-emerald-500/40 transition duration-300">
                     <div class="flex justify-between items-center">
                         <i class="fas fa-globe text-slate-400 text-sm group-hover:text-emerald-400 transition"></i>
@@ -146,25 +117,20 @@
             </div>
         </section>
 
-        <!-- 🌟 SLIDE MENU / SLIDER CAROUSEL INFO KELAS (BARU) 🌟 -->
         <section class="space-y-3">
             <div class="flex justify-between items-center px-1">
                 <h3 class="text-sm font-bold tracking-wide text-slate-400">Class Info Slide</h3>
                 <span class="text-[10px] text-purple-400 animate-pulse"><i class="fas fa-arrows-alt-h"></i> Swipe</span>
             </div>
-            <!-- Container Scroll Horizontal -->
             <div class="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory no-scrollbar">
-                <!-- Slide 1 -->
                 <div class="glass p-4 rounded-2xl min-w-[260px] snap-center flex-shrink-0 border-l-4 border-l-purple-500">
                     <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-1">Motto Kelas</h4>
                     <p class="text-[11px] text-slate-300 italic">"Solidaritas tanpa batas, berjuang bersama demi masa depan cerah di XI F7."</p>
                 </div>
-                <!-- Slide 2 -->
                 <div class="glass p-4 rounded-2xl min-w-[260px] snap-center flex-shrink-0 border-l-4 border-l-cyan-500">
                     <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-1">Agenda Terdekat</h4>
                     <p class="text-[11px] text-slate-300">Mempersiapkan dekorasi ruang kelas dan kelengkapan administrasi belajar.</p>
                 </div>
-                <!-- Slide 3 -->
                 <div class="glass p-4 rounded-2xl min-w-[260px] snap-center flex-shrink-0 border-l-4 border-l-pink-500">
                     <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-1">Informasi</h4>
                     <p class="text-[11px] text-slate-300">Gunakan fitur kirim foto di bawah untuk menyumbang dokumentasi keseruan kelas!</p>
@@ -172,42 +138,34 @@
             </div>
         </section>
 
-        <!-- SECTION DYNAMIC GALLERY (ADMIN EDITABLE) -->
         <section class="space-y-3">
             <h3 class="text-sm font-bold tracking-wide text-slate-400 px-1">Class Gallery</h3>
             <div id="gallery-container" class="grid grid-cols-2 gap-3">
-                <!-- Data real-time otomatis masuk di sini -->
-            </div>
+                </div>
             <div class="grid grid-cols-2 gap-3 pt-2">
                 <button onclick="openAdminModal()" class="w-full py-2.5 bg-white/5 border border-white/10 rounded-xl text-xs font-semibold hover:bg-white/10 transition flex items-center justify-center gap-1.5"><i class="fas fa-cloud-upload-alt text-purple-400"></i> Send Photo</button>
                 <button class="w-full py-2.5 bg-white/5 border border-white/10 rounded-xl text-xs font-semibold hover:bg-white/10 transition flex items-center justify-center gap-1.5"><i class="fas fa-download text-purple-400"></i> Request</button>
             </div>
         </section>
 
-        <!-- SECTION ANGGOTA KELAS (ADMIN EDITABLE) -->
         <section class="space-y-3">
             <h3 class="text-sm font-bold tracking-wide text-slate-400 px-1">Anggota Kelas</h3>
             <div id="members-container" class="grid grid-cols-3 gap-3">
-                <!-- Data siswa real-time otomatis masuk di sini -->
-            </div>
+                </div>
         </section>
 
-        <!-- SECTION STRUKTUR ORGANISASI -->
         <section class="space-y-4 pt-4 border-t border-white/5">
             <div class="text-center">
                 <h3 class="text-base font-black tracking-wide text-white"><span class="underline decoration-purple-500 decoration-2 underline-offset-4">Structure</span> & Schedule</h3>
             </div>
             <div class="tree-wrapper flex flex-col items-center">
                 <div id="structure-container" class="w-full space-y-4 flex flex-col items-center">
-                    <!-- Data struktur dirender vertikal oleh script.js -->
-                </div>
+                    </div>
             </div>
         </section>
     </main>
 
-    <!-- 🎵 WIDGET MUSIK TERAPUNG FLOATING PREMIUM (DI TENGAH BAWAH) 🎵 -->
     <div id="music-floating-widget" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-slate-950/80 backdrop-blur-xl border border-purple-500/30 px-4 py-2.5 rounded-full flex items-center gap-3.5 shadow-[0_10px_30px_rgba(168,85,247,0.2)] max-w-[310px] w-full hide-widget">
-        <!-- Piring Hitam Berputar (Vinyl) -->
         <div class="relative w-10 h-10 flex-shrink-0">
             <div id="vinyl-disc" class="w-full h-full bg-slate-900 rounded-full border-2 border-slate-700 flex items-center justify-center spin-vinyl paused shadow-md">
                 <div class="w-3 h-3 bg-purple-500 rounded-full border border-black"></div>
@@ -216,7 +174,6 @@
                 <i class="fas fa-compact-disc text-[9px] text-white animate-spin"></i>
             </div>
         </div>
-        <!-- Detail Info Teks Musik -->
         <div class="flex-1 min-w-0">
             <p class="text-[9px] uppercase font-bold tracking-wider text-purple-400 m-0">Music:</p>
             <h4 class="text-[11px] font-bold text-white tracking-wide truncate m-0">Rukun Sama Teman</h4>
@@ -224,7 +181,6 @@
         </div>
     </div>
 
-    <!-- === DASHBOARD PANEL ADMINISTRATOR MODAL === -->
     <div id="admin-login-modal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
         <div class="glass p-6 rounded-2xl max-w-xs w-full border border-purple-500/20">
             <div class="flex justify-between items-center mb-4">
@@ -236,17 +192,23 @@
         </div>
     </div>
 
-    <!-- DASHBOARD PANEL KENDALIAN ADMIN -->
     <div id="admin-panel" class="w-full max-w-md px-5 pb-12 hidden mx-auto">
         <div class="bg-slate-950 border border-dashed border-purple-500/40 rounded-2xl p-4 space-y-6">
             <div class="flex justify-between items-center border-b border-white/5 pb-2">
                 <h2 class="text-xs font-bold text-purple-400 uppercase tracking-wider"><i class="fas fa-user-cog mr-1"></i> Dashboard Admin</h2>
                 <button onclick="logoutAdmin()" class="text-[10px] bg-red-500/20 text-red-400 px-2 py-1 rounded">Logout</button>
             </div>
+            
             <div class="flex items-center justify-between text-xs glass p-3 rounded-xl">
                 <span>Akses Website Publik</span>
                 <button id="btn-toggle-access" onclick="toggleWebsiteAccess()" class="px-3 py-1 rounded font-bold text-[11px]"></button>
             </div>
+
+            <div class="flex items-center justify-between text-xs glass p-3 rounded-xl border border-pink-500/20">
+                <span class="font-medium text-pink-400"><i class="fas fa-broadcast-tower mr-1"></i> Status Musik Global</span>
+                <button id="btn-global-music" onclick="toggleGlobalMusic()" class="px-3 py-1 rounded font-bold text-[11px] transition-all"></button>
+            </div>
+
             <div class="space-y-3 text-xs">
                 <div class="p-3 bg-white/5 rounded-xl space-y-2">
                     <p class="font-bold text-purple-300">Tambah Foto Galeri</p>
@@ -271,58 +233,84 @@
         </div>
     </div>
 
-    <!-- SCRIPTS FOR CLOCK, AUDIO, AND WIDGET TIMING -->
     <script>
-        // 1. LOGIKA LIVE CLOCK ASIA/JAKARTA (WIB)
+        // 1. JAM DIGITAL ASIA/JAKARTA (WIB)
         function updateClock() {
             const options = { timeZone: "Asia/Jakarta", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false };
             const dateOptions = { timeZone: "Asia/Jakarta", weekday: "long", day: "numeric", month: "short", year: "numeric" };
-            
             const now = new Date();
-            const timeString = now.toLocaleTimeString("id-ID", options).replace(/\./g, ':');
-            const dateString = now.toLocaleDateString("id-ID", dateOptions);
-            
-            document.getElementById("live-clock").innerText = timeString;
-            document.getElementById("live-date").innerText = dateString + " | WIB";
+            document.getElementById("live-clock").innerText = now.toLocaleTimeString("id-ID", options).replace(/\./g, ':');
+            document.getElementById("live-date").innerText = now.toLocaleDateString("id-ID", dateOptions) + " | WIB";
         }
-        setInterval(updateClock, 1000);
-        updateClock();
+        setInterval(updateClock, 1000); updateClock();
 
-        // 2. LOGIKA AUDIO CONTROLLER
+        // 2. KONTROLLER MUSIK & SAKLAR GLOBAL FIREBASE
         const audio = document.getElementById('bg-music');
         const vinyl = document.getElementById('vinyl-disc');
-        const btnText = document.getElementById('btn-music-text');
-        const btnIcon = document.getElementById('btn-music-icon');
-        const musicIcon = document.getElementById('music-status-icon');
         const musicWidget = document.getElementById('music-floating-widget');
+        
+        audio.volume = 0.3; // Volume ideal sedang
+        let isMusicActiveGlobal = true; // Status default internal lokal
+        let userInteracted = false;
 
-        audio.volume = 0.3; // Volume pas
+        // sinkronisasi Real-Time Status Musik dari Database Firebase
+        setTimeout(() => {
+            if (typeof db !== 'undefined') {
+                db.ref('settings/isMusicPlayGlobal').on('value', (snapshot) => {
+                    const status = snapshot.val();
+                    isMusicActiveGlobal = status !== null ? status : true;
 
-        function toggleMusicControl() {
-            if (audio.paused) {
+                    const btnGlobal = document.getElementById('btn-global-music');
+                    if (btnGlobal) {
+                        if (isMusicActiveGlobal) {
+                            btnGlobal.innerText = "Musik ON";
+                            btnGlobal.className = "bg-emerald-600 px-3 py-1 rounded text-white";
+                        } else {
+                            btnGlobal.innerText = "Musik OFF";
+                            btnGlobal.className = "bg-red-600 px-3 py-1 rounded text-white";
+                        }
+                    }
+
+                    // Terapkan aksi play/pause berdasarkan kendali jarak jauh admin
+                    if (isMusicActiveGlobal) {
+                        if (userInteracted && audio.paused) startMusicPlayback();
+                    } else {
+                        stopMusicPlayback();
+                    }
+                });
+            }
+        }, 1000);
+
+        function startMusicPlayback() {
+            if (isMusicActiveGlobal) {
                 audio.play().then(() => {
                     vinyl.classList.remove('paused');
-                    btnText.innerText = "Mute";
-                    btnIcon.className = "fas fa-volume-mute";
-                    musicIcon.className = "fas fa-music text-purple-400 animate-bounce";
-                }).catch(e => console.log("Autoplay blocked"));
-            } else {
-                audio.pause();
-                vinyl.classList.add('paused');
-                btnText.innerText = "Unmute";
-                btnIcon.className = "fas fa-volume-up";
-                musicIcon.className = "fas fa-music text-slate-500";
+                }).catch(e => console.log("Menunggu interaksi pengguna"));
             }
         }
-        window.toggleMusicControl = toggleMusicControl;
 
+        function stopMusicPlayback() {
+            audio.pause();
+            vinyl.classList.add('paused');
+        }
+
+        // Trigger otomatis langsung menyala saat ada klik/sentuhan pertama di website
         document.body.addEventListener('click', function() {
-            if(audio.paused && btnText.innerText === "Play") {
-                toggleMusicControl();
+            userInteracted = true;
+            if (isMusicActiveGlobal && audio.paused) {
+                startMusicPlayback();
             }
         }, { once: true });
 
-        // 3. INTERVAL 15 DETIK WIDGET MUSIK
+        // Fungsi Admin untuk merubah status saklar musik global di Firebase
+        function toggleGlobalMusic() {
+            if (typeof db !== 'undefined') {
+                db.ref('settings').update({ isMusicPlayGlobal: !isMusicActiveGlobal });
+            }
+        }
+        window.toggleGlobalMusic = toggleGlobalMusic;
+
+        // 3. INTERVAL 15 DETIK WIDGET MUSIK MUNCUL / HILANG HALUS
         setInterval(() => {
             if (musicWidget.classList.contains('hide-widget')) {
                 musicWidget.classList.remove('hide-widget');
