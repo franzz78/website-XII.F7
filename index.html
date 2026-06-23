@@ -10,187 +10,144 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 </head>
-<body class="min-h-screen pb-12">
+<body class="min-h-screen text-slate-100 flex flex-col items-center">
 
-    <div id="closed-overlay" class="fixed inset-0 bg-slate-900 z-50 flex flex-col items-center justify-center p-4 hidden">
-        <div class="glass p-8 rounded-2xl text-center max-w-md w-full border border-red-500/30">
-            <i class="fas fa-lock text-red-500 text-6xl mb-4 animate-pulse"></i>
-            <h1 class="text-2xl font-bold mb-2">Akses Website Ditutup</h1>
-            <p class="text-slate-400 mb-6">Maaf, administrator sedang menonaktifkan akses ke website kelas XII.F7 saat ini.</p>
-            <button onclick="openAdminModal()" class="text-sm text-blue-400 hover:underline"><i class="fas fa-sign-in-alt mr-1"></i> Masuk sebagai Admin</button>
+    <div id="closed-overlay" class="fixed inset-0 bg-slate-950 z-50 flex flex-col items-center justify-center p-4 hidden">
+        <div class="glass p-8 rounded-3xl text-center max-w-sm w-full border border-purple-500/30">
+            <i class="fas fa-lock text-purple-500 text-5xl mb-4 animate-pulse"></i>
+            <h1 class="text-xl font-bold mb-2">Akses Website Ditutup</h1>
+            <p class="text-slate-400 text-sm mb-6">Maaf, administrator sedang menonaktifkan akses ke website kelas XII.F7 saat ini.</p>
+            <button onclick="openAdminModal()" class="text-xs text-purple-400 hover:underline"><i class="fas fa-sign-in-alt mr-1"></i> Masuk Admin</button>
         </div>
     </div>
 
-    <nav class="glass sticky top-0 z-40 shadow-lg mb-8">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div class="flex items-center gap-3">
-                <div class="bg-gradient-to-tr from-blue-500 to-indigo-600 p-2.5 rounded-xl shadow-md shadow-blue-500/20">
-                    <i class="fas fa-graduation-cap text-xl text-white"></i>
-                </div>
-                <div>
-                    <h1 class="text-xl font-black tracking-wider bg-gradient-to-r from-blue-400 to-indigo-200 bg-clip-text text-transparent">XII.F7</h1>
-                    <p class="text-xs text-slate-400 font-medium tracking-wide">SMAN 1 LEMAHABANG</p>
-                </div>
-            </div>
-            <div class="flex flex-wrap justify-center gap-3 text-sm">
-                <a href="#section-main" class="px-3 py-2 rounded-lg hover:bg-slate-800 transition"><i class="fas fa-home mr-1"></i> Utama</a>
-                <a href="#section-gallery" class="px-3 py-2 rounded-lg hover:bg-slate-800 transition"><i class="fas fa-images mr-1"></i> Galeri</a>
-                <a href="#section-members" class="px-3 py-2 rounded-lg hover:bg-slate-800 transition"><i class="fas fa-users mr-1"></i> Anggota</a>
-                <a href="#section-structure" class="px-3 py-2 rounded-lg hover:bg-slate-800 transition"><i class="fas fa-sitemap mr-1"></i> Struktur</a>
-                <button onclick="openAdminModal()" class="px-3 py-2 rounded-lg bg-blue-600/20 hover:bg-blue-600 text-blue-300 hover:text-white transition font-medium border border-blue-500/30"><i class="fas fa-user-shield mr-1"></i> Admin</button>
-            </div>
-        </div>
-    </nav>
-
-    <main class="max-w-7xl mx-auto px-4 space-y-12" id="main-content">
+    <main class="w-full max-w-md px-5 py-6 space-y-8">
         
-        <section id="section-main" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="glass p-8 rounded-2xl lg:col-span-2 flex flex-col justify-between relative overflow-hidden group">
-                <div class="absolute -right-10 -bottom-10 text-slate-700/10 text-9xl font-bold select-none pointer-events-none group-hover:scale-110 transition-transform duration-500">F7</div>
+        <header class="flex justify-between items-center text-sm font-medium">
+            <div class="flex items-center gap-1.5 opacity-80">
+                <div class="w-2 h-2 rounded-full bg-purple-500 animate-ping"></div>
+                <span class="text-xs tracking-wide">Hi, visitor! <strong class="block text-[13px] font-bold text-white uppercase">Welcome</strong></span>
+            </div>
+            <button onclick="openAdminModal()" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition border border-white/10">
+                <i class="fas fa-user-shield text-xs"></i>
+            </button>
+        </header>
+
+        <section class="text-center relative py-4 bg-hero-pattern bg-cover bg-center rounded-2xl overflow-hidden shadow-2xl">
+            <div class="absolute inset-0 bg-gradient-to-b from-purple-900/30 via-slate-950/80 to-slate-950"></div>
+            <div class="relative z-10">
+                <h1 class="text-5xl font-black tracking-wider text-white drop-shadow-[0_4px_12px_rgba(168,85,247,0.4)]">XII F7</h1>
+                <p class="text-[10px] uppercase font-bold tracking-widest text-purple-400 mt-1">SMAN 1 Lemahabang Cirebon</p>
+                
+                <div class="glass mx-auto mt-6 px-4 py-3 rounded-full max-w-[280px] flex justify-around items-center border border-white/5 shadow-inner">
+                    <div class="text-center"><span class="text-xl font-black text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]">25</span></div>
+                    <div class="text-center"><span class="text-xl font-black text-pink-500 drop-shadow-[0_0_8px_rgba(244,63,94,0.5)]">37</span></div>
+                    <div class="text-center"><span class="text-xl font-black text-purple-400 drop-shadow-[0_0_8px_rgba(192,132,252,0.5)]">12</span></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-2 gap-4">
+            <a href="https://www.instagram.com/smansalacirebon?igsh=NG1meGlvY3kweWpl" target="_blank" class="glass p-5 rounded-3xl flex flex-col justify-between h-48 group hover:border-purple-500/40 transition duration-300 relative overflow-hidden">
+                <div class="flex justify-between items-start">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-500 flex items-center justify-center shadow-lg"><i class="fab fa-instagram text-2xl text-white"></i></div>
+                    <i class="fas fa-chevron-right text-slate-500 group-hover:translate-x-1 transition text-sm mt-1"></i>
+                </div>
                 <div>
-                    <span class="bg-blue-500/10 text-blue-400 text-xs font-semibold px-2.5 py-1 rounded-full border border-blue-500/20 uppercase tracking-wider">Selamat Datang</span>
-                    <h2 class="text-3xl sm:text-4xl font-extrabold mt-4 mb-2 tracking-tight">Keluarga Besar <br><span class="bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">Kelas XII.F7</span></h2>
-                    <p class="text-slate-400 max-w-md text-sm sm:text-base leading-relaxed">Ruang kreativitas, kebersamaan, dan dokumentasi perjalanan belajar menuju masa depan yang gemilang.</p>
+                    <h3 class="font-bold text-base text-white leading-tight">Class Instagram</h3>
+                    <p class="text-[11px] text-slate-400 mt-1">View More</p>
                 </div>
-                <div class="mt-8 pt-4 border-t border-slate-700/50 flex items-center gap-4 text-xs text-slate-400">
-                    <div><i class="fas fa-calendar-alt text-blue-400 mr-1"></i> TA 2026/2027</div>
-                    <div><i class="fas fa-school text-emerald-400 mr-1"></i> SMANSALA</div>
-                </div>
-            </div>
+            </a>
 
-            <div class="flex flex-col gap-4 justify-between">
-                <a href="https://absensidigitalsmansala.vercel.app/" target="_blank" class="glass p-4 rounded-xl flex items-center justify-between group hover:border-blue-500/50 transition duration-300">
-                    <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 rounded-lg bg-blue-600/20 flex items-center justify-center text-blue-400 group-hover:scale-110 transition"><i class="fas fa-user-check text-xl"></i></div>
-                        <div>
-                            <h4 class="font-bold text-sm">Absensi Digital</h4>
-                            <p class="text-xs text-slate-400">Isi kehadiran harian siswa</p>
-                        </div>
+            <div class="flex flex-col gap-4">
+                <a href="https://absensidigitalsmansala.vercel.app/" target="_blank" class="glass p-4 rounded-2xl flex flex-col justify-between h-[90px] group hover:border-blue-500/40 transition duration-300">
+                    <div class="flex justify-between items-center">
+                        <i class="fas fa-link text-slate-400 text-sm group-hover:text-blue-400 transition"></i>
+                        <i class="fas fa-chevron-right text-slate-500 group-hover:translate-x-1 transition text-[10px]"></i>
                     </div>
-                    <i class="fas fa-arrow-right text-slate-500 group-hover:translate-x-1 transition text-xs"></i>
+                    <h4 class="font-bold text-xs text-slate-200">Absensi Digital</h4>
                 </a>
-                <a href="https://www.sman1lacirebon.sch.id/" target="_blank" class="glass p-4 rounded-xl flex items-center justify-between group hover:border-emerald-500/50 transition duration-300">
-                    <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 rounded-lg bg-emerald-600/20 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition"><i class="fas fa-globe text-xl"></i></div>
-                        <div>
-                            <h4 class="font-bold text-sm">Website SMANSALA</h4>
-                            <p class="text-xs text-slate-400">Situs resmi sekolah</p>
-                        </div>
+
+                <a href="https://www.sman1lacirebon.sch.id/" target="_blank" class="glass p-4 rounded-2xl flex flex-col justify-between h-[90px] group hover:border-emerald-500/40 transition duration-300">
+                    <div class="flex justify-between items-center">
+                        <i class="fas fa-globe text-slate-400 text-sm group-hover:text-emerald-400 transition"></i>
+                        <i class="fas fa-chevron-right text-slate-500 group-hover:translate-x-1 transition text-[10px]"></i>
                     </div>
-                    <i class="fas fa-arrow-right text-slate-500 group-hover:translate-x-1 transition text-xs"></i>
-                </a>
-                <a href="https://www.instagram.com/smansalacirebon?igsh=NG1meGlvY3kweWpl" target="_blank" class="glass p-4 rounded-xl flex items-center justify-between group hover:border-pink-500/50 transition duration-300">
-                    <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 rounded-lg bg-pink-600/20 flex items-center justify-center text-pink-400 group-hover:scale-110 transition"><i class="fab fa-instagram text-xl"></i></div>
-                        <div>
-                            <h4 class="font-bold text-sm">Instagram Sekolah</h4>
-                            <p class="text-xs text-slate-400">@smansalacirebon</p>
-                        </div>
-                    </div>
-                    <i class="fas fa-arrow-right text-slate-500 group-hover:translate-x-1 transition text-xs"></i>
+                    <h4 class="font-bold text-xs text-slate-200">Web SMANSALA</h4>
                 </a>
             </div>
         </section>
 
-        <section id="section-gallery" class="glass p-6 sm:p-8 rounded-2xl">
-            <div class="flex justify-between items-center mb-6">
-                <div class="flex items-center gap-2">
-                    <i class="fas fa-images text-blue-400 text-lg"></i>
-                    <h3 class="text-xl font-bold tracking-tight">Galeri Kegiatan</h3>
+        <section class="space-y-3">
+            <h3 class="text-sm font-bold tracking-wide text-slate-400 px-1">Class Gallery</h3>
+            <div id="gallery-container" class="grid grid-cols-2 gap-3">
                 </div>
-            </div>
-            <div id="gallery-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                <div class="text-center py-8 col-span-full text-slate-500"><i class="fas fa-spinner animate-spin mr-2"></i>Memuat foto galeri...</div>
-            </div>
-        </section>
-
-        <section id="section-members" class="glass p-6 sm:p-8 rounded-2xl">
-            <div class="flex items-center gap-2 mb-6">
-                <i class="fas fa-users text-indigo-400 text-lg"></i>
-                <h3 class="text-xl font-bold tracking-tight">Anggota Kelas & Foto</h3>
-            </div>
-            <div id="members-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                <div class="text-center py-8 col-span-full text-slate-500"><i class="fas fa-spinner animate-spin mr-2"></i>Memuat daftar siswa...</div>
+            <div class="grid grid-cols-2 gap-3 pt-2">
+                <button onclick="openAdminModal()" class="w-full py-2.5 bg-white/5 border border-white/10 rounded-xl text-xs font-semibold hover:bg-white/10 transition flex items-center justify-center gap-1.5"><i class="fas fa-cloud-upload-alt text-purple-400"></i> Send Photo</button>
+                <button class="w-full py-2.5 bg-white/5 border border-white/10 rounded-xl text-xs font-semibold hover:bg-white/10 transition flex items-center justify-center gap-1.5"><i class="fas fa-download text-purple-400"></i> Request</button>
             </div>
         </section>
 
-        <section id="section-structure" class="glass p-6 sm:p-8 rounded-2xl">
-            <div class="flex items-center gap-2 mb-6">
-                <i class="fas fa-sitemap text-cyan-400 text-lg"></i>
-                <h3 class="text-xl font-bold tracking-tight">Struktur Organisasi Kelas</h3>
+        <section class="space-y-3">
+            <h3 class="text-sm font-bold tracking-wide text-slate-400 px-1">Anggota Kelas</h3>
+            <div id="members-container" class="grid grid-cols-3 gap-3">
+                </div>
+        </section>
+
+        <section class="space-y-4 pt-4 border-t border-white/5">
+            <div class="text-center">
+                <h3 class="text-base font-black tracking-wide text-white"><span class="underline decoration-purple-500 decoration-2 underline-offset-4">Structure</span> & Schedule</h3>
             </div>
-            <div id="structure-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="text-center py-8 col-span-full text-slate-500"><i class="fas fa-spinner animate-spin mr-2"></i>Memuat struktur organisasi...</div>
+            
+            <div class="tree-wrapper flex flex-col items-center">
+                <div id="structure-container" class="w-full space-y-4 flex flex-col items-center">
+                    </div>
             </div>
         </section>
     </main>
 
-    <div id="admin-login-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="glass p-6 rounded-xl max-w-sm w-full border border-slate-700">
+    <div id="admin-login-modal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="glass p-6 rounded-2xl max-w-xs w-full border border-purple-500/20">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="font-bold text-lg"><i class="fas fa-lock mr-2 text-blue-400"></i>Keamanan Admin</h3>
-                <button onclick="closeAdminModal()" class="text-slate-400 hover:text-white"><i class="fas fa-times"></i></button>
+                <h3 class="font-bold text-sm text-purple-300"><i class="fas fa-lock mr-1.5"></i>Keamanan Admin</h3>
+                <button onclick="closeAdminModal()" class="text-slate-400 hover:text-white text-xs"><i class="fas fa-times"></i></button>
             </div>
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Masukkan Password/PIN Admin</label>
-                    <input type="password" id="admin-password" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-500" placeholder="••••••">
-                </div>
-                <button onclick="loginAdmin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-lg transition text-sm">Masuk Dashboard</button>
-            </div>
+            <input type="password" id="admin-password" class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-purple-500 mb-3" placeholder="Masukkan PIN">
+            <button onclick="loginAdmin()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 rounded-xl transition text-xs">Login</button>
         </div>
     </div>
 
-    <div id="admin-panel" class="max-w-7xl mx-auto px-4 mt-8 hidden">
-        <div class="bg-slate-900 border-2 border-dashed border-blue-500/50 rounded-2xl p-6 sm:p-8 space-y-8">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-slate-800">
-                <div>
-                    <h2 class="text-2xl font-black text-blue-400"><i class="fas fa-user-cog mr-2"></i>DASHBOARD ADMINISTRATOR</h2>
-                    <p class="text-xs text-slate-400">Kelola konten dan akses utama website XII.F7</p>
-                </div>
-                <div class="flex gap-2">
-                    <button onclick="logoutAdmin()" class="bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white border border-red-500/30 px-3 py-1.5 rounded-lg text-xs font-medium transition"><i class="fas fa-sign-out-alt mr-1"></i> Keluar Admin</button>
-                </div>
+    <div id="admin-panel" class="w-full max-w-md px-5 pb-12 hidden">
+        <div class="bg-slate-950 border border-dashed border-purple-500/40 rounded-2xl p-4 space-y-6">
+            <div class="flex justify-between items-center border-b border-white/5 pb-2">
+                <h2 class="text-xs font-bold text-purple-400 uppercase tracking-wider"><i class="fas fa-user-cog mr-1"></i> Dashboard Admin</h2>
+                <button onclick="logoutAdmin()" class="text-[10px] bg-red-500/20 text-red-400 px-2 py-1 rounded">Logout</button>
             </div>
 
-            <div class="glass p-4 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-blue-500/20">
-                <div>
-                    <h4 class="font-bold text-sm"><i class="fas fa-power-off mr-1.5 text-amber-400"></i>Akses Publik Website</h4>
-                    <p class="text-xs text-slate-400">Buka atau tutup seluruh fungsionalitas utama halaman publik untuk umum.</p>
-                </div>
-                <div class="flex items-center gap-2">
-                    <span id="status-text" class="text-xs font-bold uppercase bg-slate-800 px-3 py-1.5 rounded-lg">Memuat...</span>
-                    <button id="btn-toggle-access" onclick="toggleWebsiteAccess()" class="px-4 py-1.5 rounded-lg font-bold text-xs shadow transition"></button>
-                </div>
+            <div class="flex items-center justify-between text-xs glass p-3 rounded-xl">
+                <span>Akses Website Publik</span>
+                <button id="btn-toggle-access" onclick="toggleWebsiteAccess()" class="px-3 py-1 rounded font-bold text-[11px]"></button>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="glass p-5 rounded-xl space-y-4">
-                    <h4 class="font-bold text-sm border-b border-slate-800 pb-2 text-blue-400"><i class="fas fa-images mr-1.5"></i>Kelola Galeri Kegiatan</h4>
-                    <div class="space-y-2 text-xs">
-                        <input type="text" id="gal-title" class="w-full bg-slate-800 border border-slate-700 rounded p-2" placeholder="Judul Foto Kegiatan">
-                        <input type="text" id="gal-url" class="w-full bg-slate-800 border border-slate-700 rounded p-2" placeholder="URL Link Gambar/Foto">
-                        <button onclick="addGallery()" class="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded font-bold transition"><i class="fas fa-plus mr-1"></i> Tambahkan ke Galeri</button>
-                    </div>
+            <div class="space-y-3 text-xs">
+                <div class="p-3 bg-white/5 rounded-xl space-y-2">
+                    <p class="font-bold text-purple-300">Tambah Foto Galeri</p>
+                    <input type="text" id="gal-title" class="w-full bg-slate-900 border border-white/5 p-2 rounded" placeholder="Judul Foto">
+                    <input type="text" id="gal-url" class="w-full bg-slate-900 border border-white/5 p-2 rounded" placeholder="URL Gambar">
+                    <button onclick="addGallery()" class="w-full bg-purple-600 py-1.5 rounded font-bold">Simpan</button>
                 </div>
-
-                <div class="glass p-5 rounded-xl space-y-4">
-                    <h4 class="font-bold text-sm border-b border-slate-800 pb-2 text-indigo-400"><i class="fas fa-user-plus mr-1.5"></i>Kelola Anggota Kelas & Foto</h4>
-                    <div class="space-y-2 text-xs">
-                        <input type="number" id="mem-abs" class="w-full bg-slate-800 border border-slate-700 rounded p-2" placeholder="Nomor Absen">
-                        <input type="text" id="mem-name" class="w-full bg-slate-800 border border-slate-700 rounded p-2" placeholder="Nama Lengkap Siswa">
-                        <input type="text" id="mem-url" class="w-full bg-slate-800 border border-slate-700 rounded p-2" placeholder="URL Foto Profile (Kosongkan = default)">
-                        <button onclick="addMember()" class="w-full bg-indigo-600 hover:bg-indigo-700 py-2 rounded font-bold transition"><i class="fas fa-plus mr-1"></i> Simpan/Update Anggota</button>
-                    </div>
+                <div class="p-3 bg-white/5 rounded-xl space-y-2">
+                    <p class="font-bold text-pink-400">Tambah Anggota Kelas</p>
+                    <input type="number" id="mem-abs" class="w-full bg-slate-900 border border-white/5 p-2 rounded" placeholder="No Absen">
+                    <input type="text" id="mem-name" class="w-full bg-slate-900 border border-white/5 p-2 rounded" placeholder="Nama Lengkap">
+                    <input type="text" id="mem-url" class="w-full bg-slate-900 border border-white/5 p-2 rounded" placeholder="URL Foto (Kosongkan = Avatar)">
+                    <button onclick="addMember()" class="w-full bg-pink-600 py-1.5 rounded font-bold">Simpan</button>
                 </div>
-
-                <div class="glass p-5 rounded-xl space-y-4">
-                    <h4 class="font-bold text-sm border-b border-slate-800 pb-2 text-cyan-400"><i class="fas fa-sitemap mr-1.5"></i>Kelola Struktur Organisasi</h4>
-                    <div class="space-y-2 text-xs">
-                        <input type="text" id="str-role" class="w-full bg-slate-800 border border-slate-700 rounded p-2" placeholder="Jabatan (cth: Ketua Kelas, Sekretaris)">
-                        <input type="text" id="str-name" class="w-full bg-slate-800 border border-slate-700 rounded p-2" placeholder="Nama Pejabat">
-                        <button onclick="addStructure()" class="w-full bg-cyan-600 hover:bg-cyan-700 py-2 rounded font-bold transition"><i class="fas fa-plus mr-1"></i> Set / Simpan Jabatan</button>
-                    </div>
+                <div class="p-3 bg-white/5 rounded-xl space-y-2">
+                    <p class="font-bold text-cyan-400">Atur Jabatan Struktur</p>
+                    <input type="text" id="str-role" class="w-full bg-slate-900 border border-white/5 p-2 rounded" placeholder="Jabatan (Contoh: Wali Kelas)">
+                    <input type="text" id="str-name" class="w-full bg-slate-900 border border-white/5 p-2 rounded" placeholder="Nama">
+                    <button onclick="addStructure()" class="w-full bg-cyan-600 py-1.5 rounded font-bold">Set Jabatan</button>
                 </div>
             </div>
         </div>
