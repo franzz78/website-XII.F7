@@ -1,149 +1,158 @@
-:root {
-    --primary-color: #6366f1;
-    --accent-color: #a855f7;
-    --glass-bg: rgba(255, 255, 255, 0.1);
-    --glass-border: rgba(255, 255, 255, 0.2);
-    --text-color: #ffffff;
-}
-
-* {
+/* ==========================================================================
+   RESET & BASE STYLES
+   ========================================================================== */
+*, *::before, *::after {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
-    background: #0f172a;
-    color: var(--text-color);
+    background: linear-gradient(180deg, #130a2b 0%, #080512 100%);
+    font-family: '-apple-system', BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: #f1f5f9;
     min-height: 100vh;
     overflow-x: hidden;
-    display: flex;
-    justify-content: center;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-.background-blob {
-    position: fixed;
-    width: 500px;
-    height: 500px;
-    background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
-    filter: blur(100px);
-    z-index: -1;
-    border-radius: 50%;
-    top: -100px;
-    right: -100px;
-    opacity: 0.5;
-}
-
-.container {
-    width: 90%;
-    max-width: 1000px;
-    padding: 40px 0;
-}
-
-.glass {
-    background: var(--glass-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--glass-border);
-    border-radius: 24px;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-}
-
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 40px;
-    margin-bottom: 30px;
-}
-
-.logo {
-    width: 60px;
-    height: 60px;
-    object-fit: contain;
-}
-
-.title-text { text-align: center; }
-.title-text h1 { font-size: 2.5rem; font-weight: 700; letter-spacing: 2px; }
-
-.announcement {
-    padding: 30px;
-    margin-bottom: 30px;
-    position: relative;
-    overflow: hidden;
-}
-
-.badge {
-    display: inline-block;
-    padding: 5px 15px;
-    background: var(--primary-color);
-    border-radius: 12px;
-    font-size: 0.8rem;
-    margin-bottom: 15px;
-}
-
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 20px;
-}
-
-.card {
-    padding: 30px;
-    text-align: center;
-    transition: transform 0.3s ease;
-}
-
-.card:hover {
-    transform: translateY(-10px);
-    background: rgba(255, 255, 255, 0.15);
-}
-
-.icon {
-    font-size: 2rem;
-    margin-bottom: 15px;
-    color: var(--accent-color);
-}
-
-footer {
-    text-align: center;
-    margin-top: 50px;
-    opacity: 0.6;
-    font-size: 0.9rem;
-}
-
-@media (max-width: 600px) {
-    header { padding: 20px; }
-    .title-text h1 { font-size: 1.8rem; }
-}
-
-body {
-    background: linear-gradient(135deg, #0f172a, #1e293b);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #f8fafc;
-    scroll-behavior: smooth;
-}
-
-/* Efek Glassmorphism Modern */
-.glass {
-    background: rgba(30, 41, 59, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Kustomisasi scrollbar agar senada dengan UI */
+/* Kustomisasi Scrollbar Premium */
 ::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
 }
 ::-webkit-scrollbar-track {
-    background: #0f172a;
+    background: #080512;
 }
 ::-webkit-scrollbar-thumb {
-    background: #334155;
-    border-radius: 4px;
+    background: rgba(168, 85, 247, 0.3);
+    border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: #475569;
+    background: rgba(168, 85, 247, 0.6);
+}
+
+/* ==========================================================================
+   GLASSMORPHISM & BENTO UI STYLES
+   ========================================================================== */
+.glass {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), 
+                border-color 0.3s ease, 
+                box-shadow 0.3s ease;
+}
+
+/* Efek Hover Halus pada Kartu Bento */
+.glass:hover {
+    border-color: rgba(168, 85, 247, 0.3);
+    box-shadow: 0 12px 40px 0 rgba(168, 85, 247, 0.1);
+}
+
+/* Jumbotron Background */
+.bg-hero-pattern {
+    position: relative;
+    background-image: linear-gradient(rgba(19, 10, 43, 0.2), rgba(8, 5, 18, 0.95)), 
+                      url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800');
+    background-size: cover;
+    background-position: center;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Text Glow Effect untuk Angka Counter (25, 37, 12) */
+.drop-shadow-cyan {
+    filter: drop-shadow(0 0 12px rgba(34, 211, 238, 0.6));
+}
+.drop-shadow-pink {
+    filter: drop-shadow(0 0 12px rgba(244, 63, 94, 0.6));
+}
+.drop-shadow-purple {
+    filter: drop-shadow(0 0 12px rgba(168, 85, 247, 0.6));
+}
+
+/* ==========================================================================
+   DIAGRAM STRUKTUR ORGANISASI (VERTIKAL FLOW CHART)
+   ========================================================================== */
+.tree-wrapper {
+    width: 100%;
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Node Container */
+.tree-node {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    text-align: center;
+}
+
+/* Label Jabatan (Wali Kelas, Ketua, dll) */
+.tree-node span {
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    font-weight: 700;
+    color: #c084fc;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+    text-shadow: 0 0 8px rgba(192, 132, 252, 0.4);
+}
+
+/* Kartu Nama Pejabat */
+.node-card {
+    background-color: #ffffff;
+    color: #0f0b21;
+    font-weight: 700;
+    padding: 6px 24px;
+    border-radius: 9999px;
+    font-size: 13px;
+    min-width: 150px;
+    max-width: 220px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.15), 
+                inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    transition: transform 0.2s ease;
+}
+
+.node-card:hover {
+    transform: scale(1.05);
+}
+
+/* Garis Alur Vertikal Penghubung */
+.tree-line {
+    width: 2px;
+    background: linear-gradient(to bottom, #a855f7 0%, #6366f1 100%);
+    height: 24px;
+    display: block;
+    opacity: 0.8;
+    box-shadow: 0 0 8px rgba(168, 85, 247, 0.5);
+}
+
+/* ==========================================================================
+   INPUT CORRECTION & ADMIN PANEL UTILITIES
+   ========================================================================== */
+input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.4);
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+/* Efek Animasi Fade-In untuk Data yang baru muncul */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+#gallery-container > div, #members-container > div {
+    animation: fadeIn 0.4s ease-out forwards;
 }
