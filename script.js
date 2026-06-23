@@ -218,7 +218,7 @@ db.ref('structure').on('value', (snapshot) => {
 // ==========================================
 // 4. ADMIN PANEL LOGIC (CONTROLS & WRITE)
 // ==========================================
-const ADMIN_PIN = "1234"; 
+const ADMIN_PIN = "SMANSALA_KEREN26#"; 
 let isAdminLoggedIn = false;
 
 function openAdminModal() {
