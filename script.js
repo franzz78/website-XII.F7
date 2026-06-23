@@ -1,7 +1,6 @@
 // ==========================================
 // 1. CONFIGURATION & INITIALIZATION FIREBASE
 // ==========================================
-// Terhubung langsung ke Realtime Database absensi-polri milikmu
 const firebaseConfig = {
     apiKey: "AIzaSyD9BmV4XKXuMWa4PZHpb7Bbt-rHs61m3lE",
     authDomain: "absensi-polri.firebaseapp.com",
@@ -13,14 +12,67 @@ const firebaseConfig = {
     measurementId: "G-82KHRYZBN0"
 };
 
-// Inisialisasi Firebase
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
 const db = firebase.database();
 
 // ==========================================
-// 2. REAL-TIME DATA LISTENERS (READ)
+// 🌟 2. ANIMASI REAL-TIME LOADING SCREEN 🌟
+// ==========================================
+document.addEventListener("DOMContentLoaded", () => {
+    let count = 0;
+    const percentageText = document.getElementById("loading-percentage");
+    const barFill = document.getElementById("loading-bar-fill");
+    const countBox = document.getElementById("loader-counting-box");
+    const welcomeBox = document.getElementById("loader-welcome-box");
+    const loadingScreen = document.getElementById("loading-screen");
+
+    // Jalankan counter angka 0% s.d 100%
+    const counterInterval = setInterval(() => {
+        count++;
+        if (percentageText) percentageText.innerText = count + "%";
+        if (barFill) barFill.style.w = count + "%"; // Sinkronkan panjang progress bar
+        
+        if (count >= 100) {
+            clearInterval(counterInterval);
+            
+            // Langkah A: Sembunyikan pencatat persen angka
+            if (countBox) countBox.classList.add("opacity-0");
+            
+            setTimeout(() => {
+                if (countBox) countBox.classList.add("hidden");
+                
+                // Langkah B: Tampilkan Notifikasi Welcome & Credit Dennis Septiano
+                if (welcomeBox) {
+                    welcomeBox.classList.remove("hidden");
+                    setTimeout(() => {
+                        welcomeBox.classList.remove("opacity-0", "scale-95");
+                        welcomeBox.classList.add("opacity-100", "scale-100");
+                    }, 50);
+                }
+                
+                // Langkah C: Hilangkan seluruh loading screen setelah 2.5 detik pamer teks welcome
+                setTimeout(() => {
+                    if (loadingScreen) {
+                        loadingScreen.classList.add("opacity-0", "pointer-events-none");
+                        // Trigger coba putar musik setelah loading screen lenyap sepenuhnya
+                        userInteracted = true; 
+                        if (typeof startMusicPlayback === 'function') startMusicPlayback();
+                        
+                        setTimeout(() => {
+                            loadingScreen.classList.add("hidden");
+                        }, 700);
+                    }
+                }, 2500);
+
+            }, 500);
+        }
+    }, 25); // Kecepatan hitung loading (makin kecil angka, makin cepat selesai)
+});
+
+// ==========================================
+// 3. REAL-TIME DATA LISTENERS (READ)
 // ==========================================
 
 // A. Listen Status Akses Website (Buka/Tutup)
@@ -28,11 +80,8 @@ db.ref('settings/isClosed').on('value', (snapshot) => {
     const isClosed = snapshot.val();
     const overlay = document.getElementById('closed-overlay');
     if (overlay) {
-        if (isClosed) {
-            overlay.classList.remove('hidden');
-        } else {
-            overlay.classList.add('hidden');
-        }
+        if (isClosed) overlay.classList.remove('hidden');
+        else overlay.classList.add('hidden');
     }
     
     const btnAccess = document.getElementById('btn-toggle-access');
@@ -47,7 +96,7 @@ db.ref('settings/isClosed').on('value', (snapshot) => {
     }
 });
 
-// B. Sinkronisasi Status Musik Global dari Database Admin
+// B. Sinkronisasi Status Musik Global
 db.ref('settings/isMusicPlayGlobal').on('value', (snapshot) => {
     const status = snapshot.val();
     isMusicActiveGlobal = status !== null ? status : true;
@@ -63,15 +112,12 @@ db.ref('settings/isMusicPlayGlobal').on('value', (snapshot) => {
         }
     }
 
-    // Eksekusi putar/matikan musik di sisi client secara real-time
     if (isMusicActiveGlobal) {
         if (typeof userInteracted !== 'undefined' && userInteracted && typeof startMusicPlayback === 'function') {
             startMusicPlayback();
         }
     } else {
-        if (typeof stopMusicPlayback === 'function') {
-            stopMusicPlayback();
-        }
+        if (typeof stopMusicPlayback === 'function') stopMusicPlayback();
     }
 });
 
@@ -103,13 +149,12 @@ db.ref('gallery').on('value', (snapshot) => {
     checkAdminUIState();
 });
 
-// D. 🌟 LISTEN DATA ANGGOTA KELAS (FORMAT LIST MENU SAMPING & REALTIME COUNTER) 🌟
+// D. LISTEN DATA ANGGOTA KELAS
 db.ref('members').orderByChild('absen').on('value', (snapshot) => {
     const container = document.getElementById('members-container');
     if (!container) return;
     container.innerHTML = "";
     
-    // Perbarui jumlah total anggota di badge counter atas
     const totalSiswa = snapshot.numChildren();
     const countBadge = document.getElementById('member-count');
     if (countBadge) countBadge.innerText = `${totalSiswa} Siswa`;
@@ -119,7 +164,6 @@ db.ref('members').orderByChild('absen').on('value', (snapshot) => {
             const key = childSnapshot.key;
             const data = childSnapshot.val();
             
-            // Logika foto opsional: gunakan avatar jika URL kosong
             const imgElement = data.url && data.url.trim() !== "" 
                 ? `<img src="${data.url}" class="w-7 h-7 rounded-full object-cover border border-purple-500/30 shadow-md">`
                 : `<div class="w-7 h-7 rounded-full bg-purple-500/20 flex items-center justify-center border border-purple-500/20 text-[10px] text-purple-400"><i class="fas fa-user"></i></div>`;
@@ -131,7 +175,6 @@ db.ref('members').orderByChild('absen').on('value', (snapshot) => {
                 <span class="text-xs font-bold text-purple-400 tracking-wider">#${data.absen}</span>
                 <span class="text-slate-600 text-xs">|</span>
                 <span class="text-xs font-extrabold text-white uppercase tracking-wide truncate">${data.name}</span>
-                
                 <button onclick="deleteData('members', '${key}')" class="admin-only absolute right-3 top-1/2 -translate-y-1/2 bg-red-600/80 hover:bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-[10px] transition hidden">
                     <i class="fas fa-trash"></i>
                 </button>
@@ -173,20 +216,18 @@ db.ref('structure').on('value', (snapshot) => {
 });
 
 // ==========================================
-// 3. ADMIN PANEL LOGIC (CONTROLS & WRITE)
+// 4. ADMIN PANEL LOGIC (CONTROLS & WRITE)
 // ==========================================
-const ADMIN_PIN = "1234"; // Ganti PIN login admin kelasmu di sini
+const ADMIN_PIN = "1234"; 
 let isAdminLoggedIn = false;
 
 function openAdminModal() {
     document.getElementById('admin-login-modal').classList.remove('hidden');
 }
-
 function closeAdminModal() {
     document.getElementById('admin-login-modal').classList.add('hidden');
     document.getElementById('admin-password').value = "";
 }
-
 function loginAdmin() {
     const inputPassword = document.getElementById('admin-password').value;
     if (inputPassword === ADMIN_PIN) {
@@ -200,25 +241,19 @@ function loginAdmin() {
         alert("PIN Salah! Akses ditolak.");
     }
 }
-
 function logoutAdmin() {
     isAdminLoggedIn = false;
     document.getElementById('admin-panel').classList.add('hidden');
     checkAdminUIState();
     alert("Berhasil keluar dari mode administrator.");
 }
-
 function checkAdminUIState() {
     const adminButtons = document.querySelectorAll('.admin-only');
     adminButtons.forEach(btn => {
-        if (isAdminLoggedIn) {
-            btn.classList.remove('hidden');
-        } else {
-            btn.classList.add('hidden');
-        }
+        if (isAdminLoggedIn) btn.classList.remove('hidden');
+        else btn.classList.add('hidden');
     });
 }
-
 function toggleWebsiteAccess() {
     if (!isAdminLoggedIn) return;
     const btnAccess = document.getElementById('btn-toggle-access');
@@ -226,51 +261,42 @@ function toggleWebsiteAccess() {
     const currentStatus = btnAccess.innerText === "Tutup Website";
     db.ref('settings').update({ isClosed: currentStatus });
 }
-
-// Fungsi Saklar Remote Musik Jarak Jauh Global
 function toggleGlobalMusic() {
     if (!isAdminLoggedIn) return;
     db.ref('settings').update({ isMusicPlayGlobal: !isMusicActiveGlobal });
 }
-
 function addGallery() {
     if (!isAdminLoggedIn) return;
     const title = document.getElementById('gal-title').value;
     const url = document.getElementById('gal-url').value;
     if (!title || !url) return alert("Semua form wajib diisi!");
-    
     db.ref('gallery').push({ title, url }).then(() => {
         document.getElementById('gal-title').value = "";
         document.getElementById('gal-url').value = "";
     });
 }
-
 function addMember() {
     if (!isAdminLoggedIn) return;
     const absen = parseInt(document.getElementById('mem-abs').value);
     const name = document.getElementById('mem-name').value;
     const url = document.getElementById('mem-url').value;
     if (isNaN(absen) || !name) return alert("Nomor absen dan nama harus diisi!");
-    
     db.ref('members').push({ absen, name, url: url || "" }).then(() => {
         document.getElementById('mem-abs').value = "";
         document.getElementById('mem-name').value = "";
         document.getElementById('mem-url').value = "";
     });
 }
-
 function addStructure() {
     if (!isAdminLoggedIn) return;
     const role = document.getElementById('str-role').value;
     const name = document.getElementById('str-name').value;
     if (!role || !name) return alert("Jabatan dan Nama harus diisi!");
-    
     db.ref('structure').push({ role, name }).then(() => {
         document.getElementById('str-role').value = "";
         document.getElementById('str-name').value = "";
     });
 }
-
 function deleteData(path, key) {
     if (!isAdminLoggedIn) return;
     if (confirm("Apakah kamu yakin ingin menghapus data ini secara permanen dari database?")) {
