@@ -15,7 +15,7 @@
             background-image: linear-gradient(to top, rgba(8, 5, 18, 1) 0%, rgba(19, 10, 43, 0.85) 50%, rgba(19, 10, 43, 0.4) 100%), 
                               url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800');
             background-size: cover;
-            background-position: center 20%;
+            background-position: center 20%; /* Menggeser background agak ke atas */
         }
         /* Efek khusus untuk piringan hitam berputar */
         @keyframes spin {
@@ -37,7 +37,7 @@
             pointer-events: none;
             transform: translate(-50%, 20px);
         }
-        /* Hide scrollbar untuk slide menu/carousel */
+        /* Hide scrollbar untuk slide menu/carousel dan list dropdown */
         .no-scrollbar::-webkit-scrollbar {
             display: none;
         }
@@ -69,9 +69,14 @@
                 <div class="w-2 h-2 rounded-full bg-purple-500 animate-ping"></div>
                 <span class="text-xs tracking-wide">Hi, visitor! <strong class="block text-[13px] font-bold text-white uppercase">Welcome</strong></span>
             </div>
-            <button onclick="openAdminModal()" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition border border-white/10">
-                <i class="fas fa-user-shield text-xs"></i>
-            </button>
+            <div class="flex items-center gap-2">
+                <button onclick="toggleMembersList()" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition border border-white/10 text-slate-200" title="Daftar Anggota">
+                    <i id="member-icon-toggle" class="fas fa-bars text-xs"></i>
+                </button>
+                <button onclick="openAdminModal()" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition border border-white/10" title="Panel Admin">
+                    <i class="fas fa-user-shield text-xs"></i>
+                </button>
+            </div>
         </header>
 
         <section class="text-center relative py-8 bg-hero-adjusted rounded-2xl overflow-hidden shadow-2xl">
@@ -84,6 +89,15 @@
                     <span id="live-date" class="text-[9px] uppercase tracking-widest text-purple-300 font-bold mt-0.5">WIB</span>
                 </div>
             </div>
+        </section>
+
+        <section id="dropdown-members-panel" class="space-y-3 hidden transition-all duration-300">
+            <div class="flex justify-between items-center px-1">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-purple-400"><i class="fas fa-users mr-1.5"></i> Anggota Kelas</h3>
+                <span id="member-count" class="text-[10px] bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full font-bold">0 Siswa</span>
+            </div>
+            <div id="members-container" class="flex flex-col gap-2 max-h-64 overflow-y-auto pr-1 no-scrollbar">
+                </div>
         </section>
 
         <section class="grid grid-cols-2 gap-4">
@@ -148,12 +162,6 @@
             </div>
         </section>
 
-        <section class="space-y-3">
-            <h3 class="text-sm font-bold tracking-wide text-slate-400 px-1">Anggota Kelas</h3>
-            <div id="members-container" class="flex flex-col gap-2">
-                </div>
-        </section>
-
         <section class="space-y-4 pt-4 border-t border-white/5">
             <div class="text-center">
                 <h3 class="text-base font-black tracking-wide text-white"><span class="underline decoration-purple-500 decoration-2 underline-offset-4">Structure</span> & Schedule</h3>
@@ -198,14 +206,17 @@
                 <h2 class="text-xs font-bold text-purple-400 uppercase tracking-wider"><i class="fas fa-user-cog mr-1"></i> Dashboard Admin</h2>
                 <button onclick="logoutAdmin()" class="text-[10px] bg-red-500/20 text-red-400 px-2 py-1 rounded">Logout</button>
             </div>
+            
             <div class="flex items-center justify-between text-xs glass p-3 rounded-xl">
                 <span>Akses Website Publik</span>
                 <button id="btn-toggle-access" onclick="toggleWebsiteAccess()" class="px-3 py-1 rounded font-bold text-[11px]"></button>
             </div>
+
             <div class="flex items-center justify-between text-xs glass p-3 rounded-xl border border-pink-500/20">
                 <span class="font-medium text-pink-400"><i class="fas fa-broadcast-tower mr-1"></i> Status Musik Global</span>
                 <button id="btn-global-music" onclick="toggleGlobalMusic()" class="px-3 py-1 rounded font-bold text-[11px] transition-all"></button>
             </div>
+
             <div class="space-y-3 text-xs">
                 <div class="p-3 bg-white/5 rounded-xl space-y-2">
                     <p class="font-bold text-purple-300">Tambah Foto Galeri</p>
@@ -217,7 +228,7 @@
                     <p class="font-bold text-pink-400">Tambah Anggota Kelas</p>
                     <input type="number" id="mem-abs" class="w-full bg-slate-900 border border-white/5 p-2 rounded" placeholder="No Absen">
                     <input type="text" id="mem-name" class="w-full bg-slate-900 border border-white/5 p-2 rounded" placeholder="Nama Lengkap">
-                    <input type="text" id="mem-url" class="w-full bg-slate-900 border border-white/5 p-2 rounded" placeholder="URL Foto (Kosongkan = Ikon)">
+                    <input type="text" id="mem-url" class="w-full bg-slate-900 border border-white/5 p-2 rounded" placeholder="URL Foto (Kosongkan = Ikon Avatar)">
                     <button onclick="addMember()" class="w-full bg-pink-600 py-1.5 rounded font-bold">Simpan</button>
                 </div>
                 <div class="p-3 bg-white/5 rounded-xl space-y-2">
@@ -231,6 +242,7 @@
     </div>
 
     <script>
+        // 1. LOGIKA LIVE CLOCK ASIA/JAKARTA (WIB)
         function updateClock() {
             const options = { timeZone: "Asia/Jakarta", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false };
             const dateOptions = { timeZone: "Asia/Jakarta", weekday: "long", day: "numeric", month: "short", year: "numeric" };
@@ -240,36 +252,28 @@
         }
         setInterval(updateClock, 1000); updateClock();
 
+        // 2. TOGGLE DROPDOWN LIST ANGGOTA KELAS
+        function toggleMembersList() {
+            const panel = document.getElementById('dropdown-members-panel');
+            const icon = document.getElementById('member-icon-toggle');
+            if (panel.classList.contains('hidden')) {
+                panel.classList.remove('hidden');
+                icon.className = "fas fa-times text-xs text-purple-400"; // Ganti silang
+                panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            } else {
+                panel.classList.add('hidden');
+                icon.className = "fas fa-bars text-xs"; // Ganti menu burger
+            }
+        }
+        window.toggleMembersList = toggleMembersList;
+
+        // 3. EVENT AUTO-PLAY MUSIK SAAT KLIK PERTAMA
         const audio = document.getElementById('bg-music');
         const vinyl = document.getElementById('vinyl-disc');
         const musicWidget = document.getElementById('music-floating-widget');
-        audio.volume = 0.3; 
-        let isMusicActiveGlobal = true; 
+        audio.volume = 0.3;
+        let isMusicActiveGlobal = true;
         let userInteracted = false;
-
-        setTimeout(() => {
-            if (typeof db !== 'undefined') {
-                db.ref('settings/isMusicPlayGlobal').on('value', (snapshot) => {
-                    const status = snapshot.val();
-                    isMusicActiveGlobal = status !== null ? status : true;
-                    const btnGlobal = document.getElementById('btn-global-music');
-                    if (btnGlobal) {
-                        if (isMusicActiveGlobal) {
-                            btnGlobal.innerText = "Musik ON";
-                            btnGlobal.className = "bg-emerald-600 px-3 py-1 rounded text-white";
-                        } else {
-                            btnGlobal.innerText = "Musik OFF";
-                            btnGlobal.className = "bg-red-600 px-3 py-1 rounded text-white";
-                        }
-                    }
-                    if (isMusicActiveGlobal) {
-                        if (userInteracted && audio.paused) startMusicPlayback();
-                    } else {
-                        stopMusicPlayback();
-                    }
-                });
-            }
-        }, 1000);
 
         function startMusicPlayback() {
             if (isMusicActiveGlobal) {
@@ -283,11 +287,7 @@
             if (isMusicActiveGlobal && audio.paused) startMusicPlayback();
         }, { once: true });
 
-        function toggleGlobalMusic() {
-            if (typeof db !== 'undefined') db.ref('settings').update({ isMusicPlayGlobal: !isMusicActiveGlobal });
-        }
-        window.toggleGlobalMusic = toggleGlobalMusic;
-
+        // 4. INTERVAL FLOATING MUSIC WIDGET (15 DETIK TIMING)
         setInterval(() => {
             if (musicWidget.classList.contains('hide-widget')) {
                 musicWidget.classList.remove('hide-widget');
