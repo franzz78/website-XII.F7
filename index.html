@@ -150,7 +150,7 @@
 
         <section class="space-y-3">
             <h3 class="text-sm font-bold tracking-wide text-slate-400 px-1">Anggota Kelas</h3>
-            <div id="members-container" class="grid grid-cols-3 gap-3">
+            <div id="members-container" class="flex flex-col gap-2">
                 </div>
         </section>
 
@@ -198,17 +198,14 @@
                 <h2 class="text-xs font-bold text-purple-400 uppercase tracking-wider"><i class="fas fa-user-cog mr-1"></i> Dashboard Admin</h2>
                 <button onclick="logoutAdmin()" class="text-[10px] bg-red-500/20 text-red-400 px-2 py-1 rounded">Logout</button>
             </div>
-            
             <div class="flex items-center justify-between text-xs glass p-3 rounded-xl">
                 <span>Akses Website Publik</span>
                 <button id="btn-toggle-access" onclick="toggleWebsiteAccess()" class="px-3 py-1 rounded font-bold text-[11px]"></button>
             </div>
-
             <div class="flex items-center justify-between text-xs glass p-3 rounded-xl border border-pink-500/20">
                 <span class="font-medium text-pink-400"><i class="fas fa-broadcast-tower mr-1"></i> Status Musik Global</span>
                 <button id="btn-global-music" onclick="toggleGlobalMusic()" class="px-3 py-1 rounded font-bold text-[11px] transition-all"></button>
             </div>
-
             <div class="space-y-3 text-xs">
                 <div class="p-3 bg-white/5 rounded-xl space-y-2">
                     <p class="font-bold text-purple-300">Tambah Foto Galeri</p>
@@ -220,7 +217,7 @@
                     <p class="font-bold text-pink-400">Tambah Anggota Kelas</p>
                     <input type="number" id="mem-abs" class="w-full bg-slate-900 border border-white/5 p-2 rounded" placeholder="No Absen">
                     <input type="text" id="mem-name" class="w-full bg-slate-900 border border-white/5 p-2 rounded" placeholder="Nama Lengkap">
-                    <input type="text" id="mem-url" class="w-full bg-slate-900 border border-white/5 p-2 rounded" placeholder="URL Foto">
+                    <input type="text" id="mem-url" class="w-full bg-slate-900 border border-white/5 p-2 rounded" placeholder="URL Foto (Kosongkan = Ikon)">
                     <button onclick="addMember()" class="w-full bg-pink-600 py-1.5 rounded font-bold">Simpan</button>
                 </div>
                 <div class="p-3 bg-white/5 rounded-xl space-y-2">
@@ -234,7 +231,6 @@
     </div>
 
     <script>
-        // 1. JAM DIGITAL ASIA/JAKARTA (WIB)
         function updateClock() {
             const options = { timeZone: "Asia/Jakarta", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false };
             const dateOptions = { timeZone: "Asia/Jakarta", weekday: "long", day: "numeric", month: "short", year: "numeric" };
@@ -244,22 +240,18 @@
         }
         setInterval(updateClock, 1000); updateClock();
 
-        // 2. KONTROLLER MUSIK & SAKLAR GLOBAL FIREBASE
         const audio = document.getElementById('bg-music');
         const vinyl = document.getElementById('vinyl-disc');
         const musicWidget = document.getElementById('music-floating-widget');
-        
-        audio.volume = 0.3; // Volume ideal sedang
-        let isMusicActiveGlobal = true; // Status default internal lokal
+        audio.volume = 0.3; 
+        let isMusicActiveGlobal = true; 
         let userInteracted = false;
 
-        // sinkronisasi Real-Time Status Musik dari Database Firebase
         setTimeout(() => {
             if (typeof db !== 'undefined') {
                 db.ref('settings/isMusicPlayGlobal').on('value', (snapshot) => {
                     const status = snapshot.val();
                     isMusicActiveGlobal = status !== null ? status : true;
-
                     const btnGlobal = document.getElementById('btn-global-music');
                     if (btnGlobal) {
                         if (isMusicActiveGlobal) {
@@ -270,8 +262,6 @@
                             btnGlobal.className = "bg-red-600 px-3 py-1 rounded text-white";
                         }
                     }
-
-                    // Terapkan aksi play/pause berdasarkan kendali jarak jauh admin
                     if (isMusicActiveGlobal) {
                         if (userInteracted && audio.paused) startMusicPlayback();
                     } else {
@@ -283,34 +273,21 @@
 
         function startMusicPlayback() {
             if (isMusicActiveGlobal) {
-                audio.play().then(() => {
-                    vinyl.classList.remove('paused');
-                }).catch(e => console.log("Menunggu interaksi pengguna"));
+                audio.play().then(() => { vinyl.classList.remove('paused'); }).catch(e => {});
             }
         }
+        function stopMusicPlayback() { audio.pause(); vinyl.classList.add('paused'); }
 
-        function stopMusicPlayback() {
-            audio.pause();
-            vinyl.classList.add('paused');
-        }
-
-        // Trigger otomatis langsung menyala saat ada klik/sentuhan pertama di website
         document.body.addEventListener('click', function() {
             userInteracted = true;
-            if (isMusicActiveGlobal && audio.paused) {
-                startMusicPlayback();
-            }
+            if (isMusicActiveGlobal && audio.paused) startMusicPlayback();
         }, { once: true });
 
-        // Fungsi Admin untuk merubah status saklar musik global di Firebase
         function toggleGlobalMusic() {
-            if (typeof db !== 'undefined') {
-                db.ref('settings').update({ isMusicPlayGlobal: !isMusicActiveGlobal });
-            }
+            if (typeof db !== 'undefined') db.ref('settings').update({ isMusicPlayGlobal: !isMusicActiveGlobal });
         }
         window.toggleGlobalMusic = toggleGlobalMusic;
 
-        // 3. INTERVAL 15 DETIK WIDGET MUSIK MUNCUL / HILANG HALUS
         setInterval(() => {
             if (musicWidget.classList.contains('hide-widget')) {
                 musicWidget.classList.remove('hide-widget');
