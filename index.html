@@ -15,7 +15,7 @@
             background-image: linear-gradient(to top, rgba(8, 5, 18, 1) 0%, rgba(19, 10, 43, 0.85) 50%, rgba(19, 10, 43, 0.4) 100%), 
                               url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800');
             background-size: cover;
-            background-position: center 20%; /* Menggeser background agak ke atas */
+            background-position: center 20%;
         }
         /* Efek khusus untuk piringan hitam berputar */
         @keyframes spin {
@@ -47,7 +47,27 @@
         }
     </style>
 </head>
-<body class="min-h-screen text-slate-100 flex flex-col items-center pb-24">
+<body class="min-h-screen text-slate-100 flex flex-col items-center pb-24 bg-slate-950">
+
+    <div id="loading-screen" class="fixed inset-0 bg-[#080512] z-[100] flex flex-col items-center justify-center p-6 transition-all duration-700">
+        <div id="loader-counting-box" class="flex flex-col items-center justify-center space-y-3 transition-opacity duration-500">
+            <span class="text-xs uppercase font-black tracking-widest text-purple-400 animate-pulse">Load Website XI.F7</span>
+            <h2 id="loading-percentage" class="text-6xl font-black tracking-tighter text-white drop-shadow-[0_0_20px_rgba(168,85,247,0.5)]">0%</h2>
+            <div class="w-32 h-[3px] bg-white/10 rounded-full overflow-hidden">
+                <div id="loading-bar-fill" class="h-full bg-gradient-to-r from-purple-500 to-pink-500 w-0 transition-all duration-100"></div>
+            </div>
+        </div>
+
+        <div id="loader-welcome-box" class="flex flex-col items-center justify-center text-center space-y-4 opacity-0 scale-95 transition-all duration-700 hidden">
+            <div class="w-14 h-14 bg-purple-500/10 border border-purple-500/30 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(168,85,247,0.2)]">
+                <i class="fas fa-hand-sparkles text-purple-400 text-xl animate-bounce"></i>
+            </div>
+            <div>
+                <h1 class="text-xl font-black tracking-widest text-white uppercase drop-shadow-md">WELCOME TO WEBSITE XI.F7</h1>
+                <p class="text-[10px] uppercase font-bold tracking-widest text-slate-400 mt-2">Created By <span class="text-purple-400 font-extrabold">DENNIS SEPTIANO</span></p>
+            </div>
+        </div>
+    </div>
 
     <audio id="bg-music" loop>
         <source src="https://www.image2url.com/r2/default/audio/1782242939479-f33bdcf2-5869-4e75-b7d2-030df5365bd8.mp3" type="audio/mp3">
@@ -154,8 +174,7 @@
 
         <section class="space-y-3">
             <h3 class="text-sm font-bold tracking-wide text-slate-400 px-1">Class Gallery</h3>
-            <div id="gallery-container" class="grid grid-cols-2 gap-3">
-                </div>
+            <div id="gallery-container" class="grid grid-cols-2 gap-3"></div>
             <div class="grid grid-cols-2 gap-3 pt-2">
                 <button onclick="openAdminModal()" class="w-full py-2.5 bg-white/5 border border-white/10 rounded-xl text-xs font-semibold hover:bg-white/10 transition flex items-center justify-center gap-1.5"><i class="fas fa-cloud-upload-alt text-purple-400"></i> Send Photo</button>
                 <button class="w-full py-2.5 bg-white/5 border border-white/10 rounded-xl text-xs font-semibold hover:bg-white/10 transition flex items-center justify-center gap-1.5"><i class="fas fa-download text-purple-400"></i> Request</button>
@@ -167,8 +186,7 @@
                 <h3 class="text-base font-black tracking-wide text-white"><span class="underline decoration-purple-500 decoration-2 underline-offset-4">Structure</span> & Schedule</h3>
             </div>
             <div class="tree-wrapper flex flex-col items-center">
-                <div id="structure-container" class="w-full space-y-4 flex flex-col items-center">
-                    </div>
+                <div id="structure-container" class="w-full space-y-4 flex flex-col items-center"></div>
             </div>
         </section>
     </main>
@@ -206,17 +224,14 @@
                 <h2 class="text-xs font-bold text-purple-400 uppercase tracking-wider"><i class="fas fa-user-cog mr-1"></i> Dashboard Admin</h2>
                 <button onclick="logoutAdmin()" class="text-[10px] bg-red-500/20 text-red-400 px-2 py-1 rounded">Logout</button>
             </div>
-            
             <div class="flex items-center justify-between text-xs glass p-3 rounded-xl">
                 <span>Akses Website Publik</span>
                 <button id="btn-toggle-access" onclick="toggleWebsiteAccess()" class="px-3 py-1 rounded font-bold text-[11px]"></button>
             </div>
-
             <div class="flex items-center justify-between text-xs glass p-3 rounded-xl border border-pink-500/20">
                 <span class="font-medium text-pink-400"><i class="fas fa-broadcast-tower mr-1"></i> Status Musik Global</span>
                 <button id="btn-global-music" onclick="toggleGlobalMusic()" class="px-3 py-1 rounded font-bold text-[11px] transition-all"></button>
             </div>
-
             <div class="space-y-3 text-xs">
                 <div class="p-3 bg-white/5 rounded-xl space-y-2">
                     <p class="font-bold text-purple-300">Tambah Foto Galeri</p>
@@ -242,7 +257,6 @@
     </div>
 
     <script>
-        // 1. LOGIKA LIVE CLOCK ASIA/JAKARTA (WIB)
         function updateClock() {
             const options = { timeZone: "Asia/Jakarta", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false };
             const dateOptions = { timeZone: "Asia/Jakarta", weekday: "long", day: "numeric", month: "short", year: "numeric" };
@@ -252,22 +266,20 @@
         }
         setInterval(updateClock, 1000); updateClock();
 
-        // 2. TOGGLE DROPDOWN LIST ANGGOTA KELAS
         function toggleMembersList() {
             const panel = document.getElementById('dropdown-members-panel');
             const icon = document.getElementById('member-icon-toggle');
             if (panel.classList.contains('hidden')) {
                 panel.classList.remove('hidden');
-                icon.className = "fas fa-times text-xs text-purple-400"; // Ganti silang
+                icon.className = "fas fa-times text-xs text-purple-400";
                 panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             } else {
                 panel.classList.add('hidden');
-                icon.className = "fas fa-bars text-xs"; // Ganti menu burger
+                icon.className = "fas fa-bars text-xs";
             }
         }
         window.toggleMembersList = toggleMembersList;
 
-        // 3. EVENT AUTO-PLAY MUSIK SAAT KLIK PERTAMA
         const audio = document.getElementById('bg-music');
         const vinyl = document.getElementById('vinyl-disc');
         const musicWidget = document.getElementById('music-floating-widget');
@@ -282,12 +294,12 @@
         }
         function stopMusicPlayback() { audio.pause(); vinyl.classList.add('paused'); }
 
+        // Memicu musik menyala otomatis setelah loading screen selesai jika user klik layar
         document.body.addEventListener('click', function() {
             userInteracted = true;
             if (isMusicActiveGlobal && audio.paused) startMusicPlayback();
-        }, { once: true });
+        });
 
-        // 4. INTERVAL FLOATING MUSIC WIDGET (15 DETIK TIMING)
         setInterval(() => {
             if (musicWidget.classList.contains('hide-widget')) {
                 musicWidget.classList.remove('hide-widget');
