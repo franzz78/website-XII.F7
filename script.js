@@ -1,7 +1,7 @@
 // ==========================================
 // 1. CONFIGURATION & INITIALIZATION FIREBASE
 // ==========================================
-// Menggunakan Firebase Config Realtime Database milikmu
+// Terhubung langsung ke Realtime Database absensi-polri milikmu
 const firebaseConfig = {
     apiKey: "AIzaSyD9BmV4XKXuMWa4PZHpb7Bbt-rHs61m3lE",
     authDomain: "absensi-polri.firebaseapp.com",
@@ -35,7 +35,6 @@ db.ref('settings/isClosed').on('value', (snapshot) => {
         }
     }
     
-    // Perbarui teks tombol di panel admin jika sedang login
     const btnAccess = document.getElementById('btn-toggle-access');
     if (btnAccess) {
         if (isClosed) {
@@ -48,11 +47,39 @@ db.ref('settings/isClosed').on('value', (snapshot) => {
     }
 });
 
-// B. Listen Data Galeri Kelas
+// B. Sinkronisasi Status Musik Global dari Database Admin
+db.ref('settings/isMusicPlayGlobal').on('value', (snapshot) => {
+    const status = snapshot.val();
+    isMusicActiveGlobal = status !== null ? status : true;
+
+    const btnGlobal = document.getElementById('btn-global-music');
+    if (btnGlobal) {
+        if (isMusicActiveGlobal) {
+            btnGlobal.innerText = "Musik ON";
+            btnGlobal.className = "bg-emerald-600 px-3 py-1 rounded text-white";
+        } else {
+            btnGlobal.innerText = "Musik OFF";
+            btnGlobal.className = "bg-red-600 px-3 py-1 rounded text-white";
+        }
+    }
+
+    // Eksekusi putar/matikan musik di sisi client secara real-time
+    if (isMusicActiveGlobal) {
+        if (typeof userInteracted !== 'undefined' && userInteracted && typeof startMusicPlayback === 'function') {
+            startMusicPlayback();
+        }
+    } else {
+        if (typeof stopMusicPlayback === 'function') {
+            stopMusicPlayback();
+        }
+    }
+});
+
+// C. Listen Data Galeri Kelas
 db.ref('gallery').on('value', (snapshot) => {
     const container = document.getElementById('gallery-container');
     if (!container) return;
-    container.innerHTML = ""; // Bersihkan kontainer
+    container.innerHTML = "";
     
     if (snapshot.exists()) {
         snapshot.forEach((childSnapshot) => {
@@ -73,21 +100,26 @@ db.ref('gallery').on('value', (snapshot) => {
     } else {
         container.innerHTML = `<p class="text-xs text-slate-500 italic text-center col-span-2 py-4">Belum ada foto dokumentasi.</p>`;
     }
-    checkAdminUIState(); // Pastikan tombol hapus muncul jika admin sedang login
+    checkAdminUIState();
 });
 
-// C. LISTEN DATA ANGGOTA KELAS (FORMAT LIST MEMANJANG KE SAMPING)
+// D. 🌟 LISTEN DATA ANGGOTA KELAS (FORMAT LIST MENU SAMPING & REALTIME COUNTER) 🌟
 db.ref('members').orderByChild('absen').on('value', (snapshot) => {
     const container = document.getElementById('members-container');
     if (!container) return;
-    container.innerHTML = ""; // Bersihkan kontainer
+    container.innerHTML = "";
+    
+    // Perbarui jumlah total anggota di badge counter atas
+    const totalSiswa = snapshot.numChildren();
+    const countBadge = document.getElementById('member-count');
+    if (countBadge) countBadge.innerText = `${totalSiswa} Siswa`;
     
     if (snapshot.exists()) {
         snapshot.forEach((childSnapshot) => {
             const key = childSnapshot.key;
             const data = childSnapshot.val();
             
-            // Logika Foto Opsional: Jika URL kosong atau tidak ada, pakai ikon avatar default
+            // Logika foto opsional: gunakan avatar jika URL kosong
             const imgElement = data.url && data.url.trim() !== "" 
                 ? `<img src="${data.url}" class="w-7 h-7 rounded-full object-cover border border-purple-500/30 shadow-md">`
                 : `<div class="w-7 h-7 rounded-full bg-purple-500/20 flex items-center justify-center border border-purple-500/20 text-[10px] text-purple-400"><i class="fas fa-user"></i></div>`;
@@ -112,7 +144,7 @@ db.ref('members').orderByChild('absen').on('value', (snapshot) => {
     checkAdminUIState();
 });
 
-// D. Listen Data Struktur Organisasi
+// E. Listen Data Struktur Organisasi
 db.ref('structure').on('value', (snapshot) => {
     const container = document.getElementById('structure-container');
     if (!container) return;
@@ -143,7 +175,7 @@ db.ref('structure').on('value', (snapshot) => {
 // ==========================================
 // 3. ADMIN PANEL LOGIC (CONTROLS & WRITE)
 // ==========================================
-const ADMIN_PIN = "1234"; // Gantilah PIN rahasia kelas XI.F7 kamu di sini
+const ADMIN_PIN = "1234"; // Ganti PIN login admin kelasmu di sini
 let isAdminLoggedIn = false;
 
 function openAdminModal() {
@@ -176,7 +208,6 @@ function logoutAdmin() {
     alert("Berhasil keluar dari mode administrator.");
 }
 
-// Menampilkan / Menyembunyikan tombol hapus secara dinamis di layar publik
 function checkAdminUIState() {
     const adminButtons = document.querySelectorAll('.admin-only');
     adminButtons.forEach(btn => {
@@ -188,7 +219,6 @@ function checkAdminUIState() {
     });
 }
 
-// Kontrol Saklar Buka Tutup Akses Web
 function toggleWebsiteAccess() {
     if (!isAdminLoggedIn) return;
     const btnAccess = document.getElementById('btn-toggle-access');
@@ -197,12 +227,16 @@ function toggleWebsiteAccess() {
     db.ref('settings').update({ isClosed: currentStatus });
 }
 
-// Tambah Foto ke Galeri
+// Fungsi Saklar Remote Musik Jarak Jauh Global
+function toggleGlobalMusic() {
+    if (!isAdminLoggedIn) return;
+    db.ref('settings').update({ isMusicPlayGlobal: !isMusicActiveGlobal });
+}
+
 function addGallery() {
     if (!isAdminLoggedIn) return;
     const title = document.getElementById('gal-title').value;
     const url = document.getElementById('gal-url').value;
-    
     if (!title || !url) return alert("Semua form wajib diisi!");
     
     db.ref('gallery').push({ title, url }).then(() => {
@@ -211,13 +245,11 @@ function addGallery() {
     });
 }
 
-// Tambah Anggota Kelas Baru
 function addMember() {
     if (!isAdminLoggedIn) return;
     const absen = parseInt(document.getElementById('mem-abs').value);
     const name = document.getElementById('mem-name').value;
-    const url = document.getElementById('mem-url').value; // Opsional boleh kosong
-    
+    const url = document.getElementById('mem-url').value;
     if (isNaN(absen) || !name) return alert("Nomor absen dan nama harus diisi!");
     
     db.ref('members').push({ absen, name, url: url || "" }).then(() => {
@@ -227,12 +259,10 @@ function addMember() {
     });
 }
 
-// Atur Jabatan Organisasi Kelas
 function addStructure() {
     if (!isAdminLoggedIn) return;
     const role = document.getElementById('str-role').value;
     const name = document.getElementById('str-name').value;
-    
     if (!role || !name) return alert("Jabatan dan Nama harus diisi!");
     
     db.ref('structure').push({ role, name }).then(() => {
@@ -241,7 +271,6 @@ function addStructure() {
     });
 }
 
-// Fungsi Global untuk Menghapus Data di Baris List Terkait
 function deleteData(path, key) {
     if (!isAdminLoggedIn) return;
     if (confirm("Apakah kamu yakin ingin menghapus data ini secara permanen dari database?")) {
@@ -249,12 +278,13 @@ function deleteData(path, key) {
     }
 }
 
-// Daftarkan fungsi ke objek window global agar terbaca oleh tag onClick atribut HTML
+// Daftarkan fungsi ke objek window global
 window.openAdminModal = openAdminModal;
 window.closeAdminModal = closeAdminModal;
 window.loginAdmin = loginAdmin;
 window.logoutAdmin = logoutAdmin;
 window.toggleWebsiteAccess = toggleWebsiteAccess;
+window.toggleGlobalMusic = toggleGlobalMusic;
 window.addGallery = addGallery;
 window.addMember = addMember;
 window.addStructure = addStructure;
