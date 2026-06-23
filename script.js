@@ -1,4 +1,4 @@
-// 1. Inisialisasi Konfigurasi Firebase Anda
+// 1. Konfigurasi Real-time Database Firebase Milik Anda
 const firebaseConfig = {
     apiKey: "AIzaSyD9BmV4XKXuMWa4PZHpb7Bbt-rHs61m3lE",
     authDomain: "absensi-polri.firebaseapp.com",
@@ -13,112 +13,116 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// State Variabel Internal
 let currentWebsiteStatus = true; 
 let isAdminLoggedIn = false;
-const ADMIN_PIN = "123456"; // Ganti PIN admin ini sesuai keinginan Anda
+const ADMIN_PIN = "123456"; // PIN admin pelindung utama ganti di sini
 
-// 2. Listener Real-time Status Akses Website Publik
+// 2. Akses Monitor Real-time
 db.ref('settings/isWebsiteOpen').on('value', (snapshot) => {
     const status = snapshot.val();
     currentWebsiteStatus = status !== null ? status : true;
 
     const overlay = document.getElementById('closed-overlay');
-    const statusText = document.getElementById('status-text');
     const btnToggle = document.getElementById('btn-toggle-access');
 
     if (currentWebsiteStatus) {
         overlay.classList.add('hidden');
-        if (statusText) statusText.innerText = "BUKA (PUBLIK)";
-        if (statusText) statusText.className = "text-xs font-bold uppercase bg-emerald-500/20 text-emerald-400 px-3 py-1.5 rounded-lg";
-        if (btnToggle) btnToggle.innerText = "Tutup Akses Website";
-        if (btnToggle) btnToggle.className = "bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded-lg font-bold text-xs shadow transition";
-    } else {
-        if (!isAdminLoggedIn) {
-            overlay.classList.remove('hidden');
+        if (btnToggle) {
+            btnToggle.innerText = "Tutup Website";
+            btnToggle.className = "bg-red-600 px-3 py-1 rounded text-white";
         }
-        if (statusText) statusText.innerText = "DITUTUP (ADMIN ONLY)";
-        if (statusText) statusText.className = "text-xs font-bold uppercase bg-red-500/20 text-red-400 px-3 py-1.5 rounded-lg";
-        if (btnToggle) btnToggle.innerText = "Buka Akses Website";
-        if (btnToggle) btnToggle.className = "bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-1.5 rounded-lg font-bold text-xs shadow transition";
+    } else {
+        if (!isAdminLoggedIn) overlay.classList.remove('hidden');
+        if (btnToggle) {
+            btnToggle.innerText = "Buka Website";
+            btnToggle.className = "bg-emerald-600 px-3 py-1 rounded text-white";
+        }
     }
 });
 
-// 3. Listener Real-time Mengambil Data Galeri Kegiatan
+// 3. Render Real-time Galeri Foto Kegiatan
 db.ref('gallery').on('value', (snapshot) => {
     const container = document.getElementById('gallery-container');
     if (!container) return;
     container.innerHTML = "";
     const data = snapshot.val();
     if (!data) {
-        container.innerHTML = `<div class="text-center py-8 col-span-full text-slate-500">Belum ada foto kegiatan.</div>`;
+        container.innerHTML = `<p class="text-xs text-slate-500 col-span-2 text-center py-4">Belum ada foto.</p>`;
         return;
     }
     Object.keys(data).forEach(key => {
         const item = data[key];
         container.innerHTML += `
-            <div class="group relative overflow-hidden rounded-xl bg-slate-800 aspect-video shadow-md">
-                <img src="${item.url}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.src='https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=500'">
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent flex items-end p-3 justify-between">
-                    <span class="text-xs font-semibold text-slate-200 line-clamp-1">${item.title}</span>
-                    ${isAdminLoggedIn ? `<button onclick="deleteData('gallery/${key}')" class="bg-red-600/80 hover:bg-red-600 p-1.5 rounded text-white text-xs transition"><i class="fas fa-trash"></i></button>` : ''}
+            <div class="relative group rounded-xl overflow-hidden aspect-video bg-white/5 border border-white/5">
+                <img src="${item.url}" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center p-2">
+                    <span class="text-[10px] font-medium text-center line-clamp-2">${item.title}</span>
+                    ${isAdminLoggedIn ? `<button onclick="deleteData('gallery/${key}')" class="absolute top-1 right-1 bg-red-600 text-white p-1 rounded text-[9px]"><i class="fas fa-trash"></i></button>` : ''}
                 </div>
             </div>
         `;
     });
 });
 
-// 4. Listener Real-time Mengambil Data Anggota Kelas
+// 4. Render Real-time Anggota Siswa
 db.ref('members').on('value', (snapshot) => {
     const container = document.getElementById('members-container');
     if (!container) return;
     container.innerHTML = "";
     const data = snapshot.val();
     if (!data) {
-        container.innerHTML = `<div class="text-center py-8 col-span-full text-slate-500">Belum ada data anggota kelas.</div>`;
+        container.innerHTML = `<p class="text-xs text-slate-500 col-span-3 text-center py-4">Kosong.</p>`;
         return;
     }
     Object.keys(data).forEach(key => {
         const item = data[key];
-        const placeholderAvatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${item.name}`;
+        const avatar = item.url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${item.name}`;
         container.innerHTML += `
-            <div class="glass p-4 rounded-xl flex flex-col items-center text-center relative group">
-                <span class="absolute top-2 left-2 bg-slate-800/80 text-slate-400 font-mono text-[10px] w-5 h-5 rounded-full flex items-center justify-center border border-slate-700">${item.absen}</span>
-                <img src="${item.url || placeholderAvatar}" alt="${item.name}" class="w-16 h-16 rounded-full object-cover mb-3 border-2 border-slate-700 group-hover:border-indigo-400 transition" onerror="this.src='${placeholderAvatar}'">
-                <h5 class="text-xs font-bold text-slate-200 line-clamp-2">${item.name}</h5>
-                ${isAdminLoggedIn ? `<button onclick="deleteData('members/${key}')" class="mt-3 text-[10px] bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white px-2 py-0.5 rounded transition"><i class="fas fa-user-minus mr-1"></i>Hapus</button>` : ''}
+            <div class="glass p-3 rounded-xl flex flex-col items-center relative text-center">
+                <span class="absolute top-1 left-1.5 text-[8px] text-slate-500 font-mono">#${item.absen}</span>
+                <img src="${avatar}" class="w-10 h-10 rounded-full object-cover border border-white/10 mb-1">
+                <p class="text-[10px] font-bold tracking-tight line-clamp-1 text-slate-200">${item.name}</p>
+                ${isAdminLoggedIn ? `<button onclick="deleteData('members/${key}')" class="text-[8px] text-red-400 hover:underline mt-1">Hapus</button>` : ''}
             </div>
         `;
     });
 });
 
-// 5. Listener Real-time Mengambil Data Struktur Organisasi
+// 5. Render Real-time Bagan Struktur Organisasi (Meniru Bagan Alur di Gambar)
 db.ref('structure').on('value', (snapshot) => {
     const container = document.getElementById('structure-container');
     if (!container) return;
     container.innerHTML = "";
     const data = snapshot.val();
     if (!data) {
-        container.innerHTML = `<div class="text-center py-8 col-span-full text-slate-500">Belum ada struktur organisasi.</div>`;
+        container.innerHTML = `<p class="text-xs text-slate-500 text-center py-2">Bagan belum dibuat.</p>`;
         return;
     }
+    
+    let index = 0;
     Object.keys(data).forEach(key => {
         const item = data[key];
+        
+        // Buat komponen node dan garis alur penghubung secara otomatis
+        if (index > 0) {
+            container.innerHTML += `<div class="tree-line"></div>`;
+        }
+        
         container.innerHTML += `
-            <div class="bg-slate-800/40 border border-slate-700/60 p-4 rounded-xl flex justify-between items-center">
-                <div>
-                    <span class="text-[10px] font-bold tracking-wider text-cyan-400 uppercase">${item.role}</span>
-                    <h5 class="text-sm font-bold text-slate-200 mt-0.5">${item.name}</h5>
+            <div class="tree-node">
+                <span class="text-[9px] uppercase font-bold tracking-widest text-purple-400 mb-1">${item.role}</span>
+                <div class="node-card relative">
+                    ${item.name}
+                    ${isAdminLoggedIn ? `<button onclick="deleteData('structure/${key}')" class="absolute -right-6 top-1 text-red-500 text-[10px]"><i class="fas fa-minus-circle"></i></button>` : ''}
                 </div>
-                ${isAdminLoggedIn ? `<button onclick="deleteData('structure/${key}')" class="bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white p-1.5 rounded transition text-xs"><i class="fas fa-trash-alt"></i></button>` : ''}
             </div>
         `;
+        index++;
     });
 });
 
-// ================= AUTENTIKASI & KENDALIAN ADMIN =================
+// ================= ACTION UTILITY UTAMA =================
 function openAdminModal() { document.getElementById('admin-login-modal').classList.remove('hidden'); }
-// Fungsi ini juga dibuat global agar bisa dipanggil tombol close 'X'
 window.openAdminModal = openAdminModal;
 
 function closeAdminModal() { document.getElementById('admin-login-modal').classList.add('hidden'); }
@@ -128,48 +132,30 @@ function loginAdmin() {
     const input = document.getElementById('admin-password').value;
     if (input === ADMIN_PIN) {
         isAdminLoggedIn = true;
-        alert('Login Admin Berhasil!');
+        alert('Dashboard Admin Terbuka!');
         closeAdminModal();
         document.getElementById('admin-panel').classList.remove('hidden');
         document.getElementById('closed-overlay').classList.add('hidden');
-        
-        // Memicu trigger refresh lokal untuk memunculkan tombol hapus/delete data
-        db.ref('gallery').get().then(() => db.ref('gallery').push().set(null));
-        db.ref('members').get().then(() => db.ref('members').push().set(null));
-        db.ref('structure').get().then(() => db.ref('structure').push().set(null));
+        // Refresh trigger view lokal
+        db.ref('settings/isWebsiteOpen').get();
     } else {
-        alert('Password/PIN Admin salah!');
+        alert('PIN Keliru!');
     }
 }
 window.loginAdmin = loginAdmin;
 
-function logoutAdmin() {
-    isAdminLoggedIn = false;
-    document.getElementById('admin-panel').classList.add('hidden');
-    if (!currentWebsiteStatus) {
-        document.getElementById('closed-overlay').classList.remove('hidden');
-    }
-    alert('Berhasil Keluar dari mode Administrator.');
-    location.reload();
-}
+function logoutAdmin() { location.reload(); }
 window.logoutAdmin = logoutAdmin;
 
 function toggleWebsiteAccess() {
-    db.ref('settings').update({
-        isWebsiteOpen: !currentWebsiteStatus
-    });
+    db.ref('settings').update({ isWebsiteOpen: !currentWebsiteStatus });
 }
 window.toggleWebsiteAccess = toggleWebsiteAccess;
 
-// ================= AKSI TAMBAH DATA (ADMIN ONLY) =================
 function addGallery() {
     const title = document.getElementById('gal-title').value;
     const url = document.getElementById('gal-url').value;
-    if (!title || !url) return alert('Mohon isi semua form galeri!');
-    db.ref('gallery').push({ title, url }).then(() => {
-        document.getElementById('gal-title').value = '';
-        document.getElementById('gal-url').value = '';
-    });
+    if (title && url) db.ref('gallery').push({ title, url }).then(() => { alert('Foto tersimpan!'); });
 }
 window.addGallery = addGallery;
 
@@ -177,30 +163,18 @@ function addMember() {
     const absen = document.getElementById('mem-abs').value;
     const name = document.getElementById('mem-name').value;
     const url = document.getElementById('mem-url').value;
-    if (!absen || !name) return alert('Mohon isi Nomor Absen dan Nama!');
-    db.ref('members').push({ absen: parseInt(absen), name, url }).then(() => {
-        document.getElementById('mem-abs').value = '';
-        document.getElementById('mem-name').value = '';
-        document.getElementById('mem-url').value = '';
-    });
+    if (absen && name) db.ref('members').push({ absen: parseInt(absen), name, url }).then(() => { alert('Siswa disimpan!'); });
 }
 window.addMember = addMember;
 
 function addStructure() {
     const role = document.getElementById('str-role').value;
     const name = document.getElementById('str-name').value;
-    if (!role || !name) return alert('Mohon isi Jabatan dan Nama!');
-    db.ref('structure').push({ role, name }).then(() => {
-        document.getElementById('str-role').value = '';
-        document.getElementById('str-name').value = '';
-    });
+    if (role && name) db.ref('structure').push({ role, name }).then(() => { alert('Jabatan terpasang!'); });
 }
 window.addStructure = addStructure;
 
-// ================= AKSI HAPUS DATA (ADMIN ONLY) =================
 function deleteData(path) {
-    if (confirm('Apakah Anda yakin ingin menghapus konten ini?')) {
-        db.ref(path).remove().then(() => alert('Konten berhasil dihapus secara real-time.'));
-    }
+    if (confirm('Hapus item ini?')) db.ref(path).remove();
 }
 window.deleteData = deleteData;
