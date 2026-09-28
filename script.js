@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // ==========================================
 // 3. ADMIN PANEL & LOGIN LOGIC
 // ==========================================
-const ADMIN_PIN = "1234"; // Ganti PIN sesuai keinginanmu di sini
+const ADMIN_PIN = "SMAMLA2026#"; // Ganti PIN sesuai keinginanmu di sini
 let isAdminLoggedIn = false;
 
 function openAdminModal() {
